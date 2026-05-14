@@ -11,6 +11,7 @@
       </nav>
 
       <div class="user-block">
+        <a href="https://ams.makuraly.xyz" target="_blank" class="nav-item ext-link">前往飞行雪绒</a>
         <router-link to="/" class="exit-btn">EXIT SYSTEM</router-link>
       </div>
     </header>
@@ -86,6 +87,21 @@
   flex: 1;
   display: flex;
   justify-content: flex-end;
+  gap: 2rem; /* 增加退出的间距 */
+  align-items: center;
+}
+
+.ext-link {
+  color: rgb(var(--c-pink));
+  text-decoration: none;
+  font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+  letter-spacing: 0.15rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.ext-link:hover {
+  text-shadow: 0 0 10px rgb(var(--c-pink));
 }
 
 .nav-item {

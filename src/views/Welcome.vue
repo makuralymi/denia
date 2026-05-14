@@ -8,6 +8,7 @@
       
       <div class="nav-links">
         <router-link to="/home" class="nav-btn">ENTER SYSTEM</router-link>
+        <a href="https://ams.makuraly.xyz" target="_blank" class="nav-btn ext-btn">前往飞行雪绒</a>
       </div>
     </div>
   </div>
