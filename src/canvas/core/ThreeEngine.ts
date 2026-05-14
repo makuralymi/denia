@@ -41,9 +41,9 @@ export class ThreeEngine extends BaseEngine {
     // TODO: 后续在这里可以挂载后期处理管线 (Post-Processing) 如 Bloom、波纹 (Ripple) 等
   }
 
-  protected update(dt: number): void {
+  protected update(_dt: number): void {
     // 之后实体(Entity)、粒子系统(Particles)、交互控制器的更新逻辑将在此调用
-    // 例如: this.particleSystem.update(dt);
+    // 例如: this.particleSystem.update(_dt);
   }
 
   protected render(): void {
