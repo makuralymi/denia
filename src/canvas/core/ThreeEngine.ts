@@ -15,9 +15,10 @@ export class ThreeEngine extends BaseEngine {
 
     // 1. 初始化场景
     this.scene = new THREE.Scene();
-    // 默认给一个符合你偏好的粉色系背景底色，或者透明以配合外部 CSS
-    this.scene.background = new THREE.Color('#1a0f14'); 
-    this.scene.fog = new THREE.FogExp2('#1a0f14', 0.002);
+    // 使用全透明背景，以便透出底层的 public/image/denia.png 静态壁纸
+    this.scene.background = null; 
+    // 渲染雾效也使用主色调里的浅粉/紫辉光 (#fabffd 代表 250,191,253)
+    this.scene.fog = new THREE.FogExp2('#fabffd', 0.005);
 
     // 2. 初始化相机 (这里使用默认透视相机)
     // 宽高的实际值会在父类挂载 resizeObserver 后的 onResize 中首次触发并修正

@@ -25,6 +25,14 @@ const { canvasRef } = useCanvas();
 </script>
 
 <style>
+/* 全局色彩定义 */
+:root {
+  --c-pink: 250, 191, 253;
+  --c-purple: 49, 27, 126;
+  --c-light-blue: 173, 206, 253;
+  --c-deep-blue: 41, 84, 227;
+}
+
 /* 
   全局基础样式可以移到 assets 里的 css 中，
   这里为了明确层级结构，定义核心的容器样式。
@@ -43,6 +51,11 @@ html, body, #app {
   position: relative;
   width: 100vw;
   height: 100vh;
+  /* 注入主图，铺满全屏 */
+  background-image: url('/image/denia.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* 核心：深度层级 - 底层 */

@@ -1,69 +1,173 @@
 <template>
-  <div class="home-container">
-    <h1 class="title">DENIA</h1>
-    <p class="subtitle">System Initialization Complete</p>
+  <div class="home-layout">
+    <!-- 顶部导航栏，延续毛玻璃质感 -->
+    <header class="top-nav glass-nav">
+      <div class="logo">DENIA</div>
+      
+      <nav class="nav-items">
+        <router-link to="/home" exact-active-class="active" class="nav-item">OVERVIEW</router-link>
+        <router-link to="/home/archive" exact-active-class="active" class="nav-item">ARCHIVE</router-link>
+        <a href="#" class="nav-item">MODULES</a>
+      </nav>
+
+      <div class="user-block">
+        <router-link to="/" class="exit-btn">EXIT SYSTEM</router-link>
+      </div>
+    </header>
     
-    <div class="nav-links">
-      <router-link to="/gallery" class="nav-btn">ENTER GALLERY</router-link>
-      <router-link to="/lore" class="nav-btn">READ LORE</router-link>
-    </div>
+    <!-- 留作后续功能的主区域 -->
+    <main class="main-content">
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
-// 首页面板逻辑
+// 主页核心交互逻辑
 </script>
 
 <style scoped>
-.home-container {
+.home-layout {
   width: 100vw;
   height: 100vh;
   display: flex;
   flex-direction: column;
+  pointer-events: none; /* 让背景 Canvas 层能够响应空白处拖拽等事件 */
+}
+
+/* 顶部导航栏 - 固定在最上层 */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box; /* 强力限制内边距溢出防出界 */
+  pointer-events: auto; /* 恢复导航栏自带的鼠标交互 */
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5%;
+  border-bottom: 1px solid rgba(var(--c-light-blue), 0.15);
+  box-shadow: 0 4px 30px rgba(255, 255, 255, 0.202);
+  z-index: 100; /* 确保导航栏一直在顶层 */
+}
+
+.glass-nav {
+  background: transparent; /* 去除填充颜色 */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Logo 区 */
+.logo {
+  flex: 1; /* 均分剩余空间，协助中心对齐 */
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.3rem;
+  color: rgb(var(--c-pink));
+  text-shadow: 0 0 15px rgba(var(--c-pink), 0.6);
+}
+
+/* 导航项 */
+.nav-items {
+  flex: 2; /* 保证居中 */
+  display: flex;
+  justify-content: center;
+  gap: 3vw;
+}
+
+/* 右侧退出块 */
+.user-block {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.nav-item {
+  color: rgba(var(--c-light-blue), 0.6);
+  text-decoration: none;
+  font-size: clamp(0.75rem, 1.5vw, 0.85rem); /* 响应式字体 */
+  letter-spacing: 0.15rem;
+  text-transform: uppercase;
+  position: relative;
+  padding: 0.5rem 0;
+  transition: color 0.3s ease;
+}
+
+.nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 1px;
+  background: rgb(var(--c-light-blue));
+  transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 0 10px rgb(var(--c-light-blue));
+}
+
+.nav-item:hover, .nav-item.active {
+  color: #fff;
+}
+
+.nav-item:hover::after, .nav-item.active::after {
+  width: 100%;
+}
+
+/* 右侧退出按钮 */
+.exit-btn {
+  color: rgba(var(--c-pink), 0.8);
+  text-decoration: none;
+  font-size: clamp(0.7rem, 1vw, 0.8rem);
+  letter-spacing: 0.1rem;
+  border: 1px solid rgba(var(--c-pink), 0.3);
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.exit-btn:hover {
+  background: rgba(var(--c-deep-blue), 0.3);
+  color: #fff;
+  border-color: rgb(var(--c-light-blue));
+  box-shadow: 0 0 12px rgba(var(--c-light-blue), 0.4);
+}
+
+/* 移动端细化响应式适配 */
+@media screen and (max-width: 768px) {
+  .top-nav {
+    padding: 0 1rem;
+    height: 60px;
+  }
+  .logo {
+    display: none; /* 小屏幕隐藏Logo，保证导航可见 */
+  }
+  .nav-items {
+    gap: 1rem;
+  }
+  .exit-btn {
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+/* 内容占位 */
+.main-content {
+  flex: 1;
+  display: flex;
   justify-content: center;
   align-items: center;
-  color: #ffb6c1; /* 粉色系文字配合底色 */
-  text-align: center;
-  pointer-events: none; /* 让大部分区域不阻挡背景交互 */
 }
 
-.title {
-  font-size: 6rem;
-  letter-spacing: 0.5rem;
-  margin: 0;
-  text-shadow: 0 0 20px rgba(255, 182, 193, 0.4);
-}
-
-.subtitle {
-  font-size: 1.2rem;
+.content-placeholder p {
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 300;
   letter-spacing: 0.2rem;
-  opacity: 0.8;
-  margin-top: 1rem;
-}
-
-.nav-links {
-  margin-top: 4rem;
-  display: flex;
-  gap: 2rem;
-  pointer-events: auto; /* 恢复按钮交互 */
-}
-
-.nav-btn {
-  color: #fff;
-  text-decoration: none;
-  font-size: 1rem;
-  letter-spacing: 0.1rem;
-  padding: 0.8rem 2rem;
-  border: 1px solid rgba(255, 182, 193, 0.3);
-  background: rgba(255, 182, 193, 0.05);
-  backdrop-filter: blur(4px);
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.nav-btn:hover {
-  background: rgba(255, 182, 193, 0.2);
-  border-color: rgba(255, 182, 193, 0.8);
-  box-shadow: 0 0 15px rgba(255, 182, 193, 0.3);
-  transform: scale(1.05);
+  font-size: 1.2rem;
 }
 </style>
