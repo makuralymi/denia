@@ -13,12 +13,16 @@
           <component :is="Component" />
         </transition>
       </router-view>
+      
+      <!-- 全局迷你音乐播放器 -->
+      <MiniPlayer />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useCanvas } from './composables/useCanvas';
+import MiniPlayer from './components/shared/MiniPlayer.vue';
 
 // 唤醒并挂载我们的 WebGL 引擎
 const { canvasRef } = useCanvas();
