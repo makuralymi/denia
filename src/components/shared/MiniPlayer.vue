@@ -58,9 +58,14 @@
           <div class="progress-glow-head"></div>
           <!-- 随点粒子飘散 -->
           <div v-if="isPlaying" class="particle-emitter">
-            <span class="p-1"></span>
-            <span class="p-2"></span>
-            <span class="p-3"></span>
+            <span class="p-1" style="--rand: 0.8"></span>
+            <span class="p-2" style="--rand: 0.4"></span>
+            <span class="p-3" style="--rand: 1.0"></span>
+            <span class="p-4" style="--rand: 0.6"></span>
+            <span class="p-5" style="--rand: 0.2"></span>
+            <span class="p-6" style="--rand: 0.9"></span>
+            <span class="p-7" style="--rand: 0.5"></span>
+            <span class="p-8" style="--rand: 0.7"></span>
           </div>
         </div>
       </div>
@@ -214,10 +219,10 @@ const drawVisualizer = () => {
     // 限制高度比例映射
     const barHeight = (dataArray[i] / 255) * height;
 
-    // 采用与主题匹配的从底到上的半透明粉紫渐变色条
+    // 采用与主题匹配的从底到上的半透明粉紫渐变色条（高亮版本）
     const gradient = ctx.createLinearGradient(0, height, 0, height - barHeight);
-    gradient.addColorStop(0, 'rgba(250, 191, 253, 0.8)'); // pink
-    gradient.addColorStop(1, 'rgba(173, 206, 253, 0.4)'); // light blue
+    gradient.addColorStop(0, 'rgba(255, 180, 200, 1)'); // 底层更亮的粉白
+    gradient.addColorStop(1, 'rgba(190, 220, 255, 0.9)'); // 顶部更饱满的浅蓝
     
     ctx.fillStyle = gradient;
     
@@ -562,7 +567,7 @@ onUnmounted(() => {
 .particle-emitter {
   position: absolute;
   right: 0;
-  top: 50%;
+  top: 80%;
 }
 
 .particle-emitter span {
@@ -577,9 +582,14 @@ onUnmounted(() => {
   opacity: 0;
 }
 
-.p-1 { animation: scatter 1.2s infinite ease-out; animation-delay: 0s; }
-.p-2 { animation: scatter 1.5s infinite ease-out; animation-delay: 0.4s; }
-.p-3 { animation: scatter 1.8s infinite ease-out; animation-delay: 0.8s; }
+.p-1 { animation: scatter 1.0s infinite ease-out; animation-delay: 0s; }
+.p-2 { animation: scatter 1.2s infinite ease-out; animation-delay: 0.15s; }
+.p-3 { animation: scatter 1.5s infinite ease-out; animation-delay: 0.3s; }
+.p-4 { animation: scatter 1.1s infinite ease-out; animation-delay: 0.45s; }
+.p-5 { animation: scatter 1.4s infinite ease-out; animation-delay: 0.6s; }
+.p-6 { animation: scatter 1.6s infinite ease-out; animation-delay: 0.75s; }
+.p-7 { animation: scatter 1.3s infinite ease-out; animation-delay: 0.9s; }
+.p-8 { animation: scatter 1.7s infinite ease-out; animation-delay: 1.05s; }
 
 @keyframes scatter {
   0% {
@@ -587,7 +597,7 @@ onUnmounted(() => {
     opacity: 1;
   }
   100% {
-    transform: translate(-30px, -40px) scale(0);
+    transform: translate(calc(-20px - 30px * var(--rand, 1)), calc(-30px - 20px * var(--rand, 1))) scale(0);
     opacity: 0;
   }
 }
