@@ -3,12 +3,12 @@
     <!-- 玻璃态拟物卡片结构 (Glassmorphism) -->
     <div class="glass-panel">
       <h1 class="title">DENIA</h1>
-      <div class="divider"></div>
+      <div class="divider">⚠️正在制作娅娅对话语音AI,敬请期待！</div>
       <p class="subtitle">System Initialization Complete</p>
       
       <div class="nav-links">
-        <router-link to="/home" class="nav-btn">ENTER SYSTEM</router-link>
-        <a href="https://ams.makuraly.xyz" target="_blank" class="nav-btn ext-btn">前往飞行雪绒</a>
+        <router-link to="/home" class="nav-btn">ENTER SYSTEM<br>进入站点</router-link>
+        <a href="https://ams.makuraly.xyz" target="_blank" class="nav-btn ext-btn">前往飞行雪绒<br>Fleet Snowfluff</a>
       </div>
     </div>
   </div>
@@ -59,8 +59,10 @@
 }
 
 .divider {
-  width: 60%;
+  width: 100%;
   height: 1px;
+  font-size: 25px;
+  color: rgba(255, 239, 239, 0.747);
   margin: 1.5rem auto;
   background: linear-gradient(90deg, transparent, rgba(var(--c-light-blue), 0.8), transparent);
 }
