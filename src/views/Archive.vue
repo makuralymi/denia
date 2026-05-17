@@ -226,7 +226,7 @@ const scrollTo = (id: string) => {
 }
 
 .banner-btn {
-  background: rgba(20, 10, 20, 0.1archive更新archive更新);
+  background: rgba(20, 10, 20, 0.1);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(var(--c-pink), 0.5);
@@ -237,7 +237,7 @@ const scrollTo = (id: string) => {
   letter-spacing: 0.15rem;
   border-radius: 30px;
   cursor: pointer;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(var(--c-pink), 0.2);
+  box-shadow: 0 5px 20px rgba(228, 144, 179, 0.4), inset 0 0 10px rgba(var(--c-pink), 0.2);
   transition: all 0.3s ease;
 }
 
