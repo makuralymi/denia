@@ -1,16 +1,21 @@
 <template>
   <div class="archive-view">
     <!-- 右侧导航及返回顶部 -->
-    <div class="side-nav">
-      <button class="nav-btn" @click="scrollTo('info')">基础信息</button>
-      <button class="nav-btn" @click="scrollTo('gallery')">养成&展示</button>
-      <button class="nav-btn" @click="scrollTo('skills')">技能说明</button>
-      <button class="nav-btn" @click="scrollTo('showcase')">共鸣者展示</button>
-      <button class="nav-btn" @click="scrollTo('meet')">认识达妮娅</button>
-      <button class="nav-btn" @click="scrollTo('design')">角色设计</button>
-      <button class="nav-btn" @click="scrollTo('hobby')">喜好</button>
-      <button class="nav-btn" @click="scrollTo('action')">动作展示</button>
-      <button class="nav-btn top-btn" @click="scrollTo('top')" title="返回顶部">▲</button>
+    <div class="side-nav" :class="{ 'collapsed': isNavCollapsed }">
+      <button class="toggle-btn" @click="toggleNav" :title="isNavCollapsed ? '展开导航' : '收起导航'">
+        {{ isNavCollapsed ? '◀' : '▶' }}
+      </button>
+      <div class="nav-content">
+        <button class="nav-btn" @click="scrollTo('info')">基础信息</button>
+        <button class="nav-btn" @click="scrollTo('gallery')">养成&展示</button>
+        <button class="nav-btn" @click="scrollTo('skills')">技能说明</button>
+        <button class="nav-btn" @click="scrollTo('showcase')">共鸣者展示</button>
+        <button class="nav-btn" @click="scrollTo('meet')">认识达妮娅</button>
+        <button class="nav-btn" @click="scrollTo('design')">角色设计</button>
+        <button class="nav-btn" @click="scrollTo('hobby')">喜好</button>
+        <button class="nav-btn" @click="scrollTo('action')">动作展示</button>
+        <button class="nav-btn top-btn" @click="scrollTo('top')" title="返回顶部">▲</button>
+      </div>
     </div>
 
     <!-- 顶部主图 Banner -->
@@ -168,6 +173,7 @@
 import { ref, onMounted } from 'vue'
 
 const currentBanner = ref('/image/archive.jpeg')
+const isNavCollapsed = ref(false)
 
 onMounted(() => {
   const images = ['/image/archive.jpeg', '/image/archive1.jpeg']
@@ -179,6 +185,10 @@ const scrollTo = (id: string) => {
   if (el) {
     el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
+}
+
+const toggleNav = () => {
+  isNavCollapsed.value = !isNavCollapsed.value
 }
 </script>
 
@@ -580,38 +590,74 @@ const scrollTo = (id: string) => {
   top: 50%;
   transform: translateY(-50%);
   display: flex;
+  align-items: flex-start;
+  z-index: 100;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.side-nav.collapsed {
+  transform: translate(calc(100% + 20px), -50%);
+}
+
+.toggle-btn {
+  background: transparent;
+  border: none;
+  color: rgba(var(--c-pink), 0.8);
+  padding: 15px 5px;
+  cursor: pointer;
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background: transparent;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(var(--c-pink), 0.8);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.nav-content {
+  display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px; /* 减小间距以适应单列多按钮 */
-  z-index: 100;
-  max-height: 90vh; /* 防止超屏 */
+  gap: 8px;
+  max-height: 90vh;
   overflow-y: auto;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 /* 隐藏滚动条 */
-.side-nav::-webkit-scrollbar {
+.nav-content::-webkit-scrollbar {
   display: none;
 }
 
+/* 防止页面缩放时按钮变小或排版错乱 */
 .nav-btn {
+  flex-shrink: 0;
   background: rgba(20, 10, 20, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(var(--c-pink), 0.3);
   color: rgba(255, 255, 255, 0.8);
   padding: 10px 10px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 0.85rem; /* 稍微缩小字体 */
-  writing-mode: vertical-lr; /* 垂直排版 */
+  font-size: 14px; /* 使用px代替rem避免严重缩放问题 */
+  writing-mode: vertical-lr;
   text-align: center;
-  min-height: 60px; /* 改用 min-height 让内容决定高度，不再强行凑150px等满 */
+  min-height: 60px;
+  width: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  letter-spacing: 0.15rem;
+  letter-spacing: 2px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .nav-btn:hover {
@@ -623,12 +669,12 @@ const scrollTo = (id: string) => {
 }
 
 .top-btn {
-  writing-mode: horizontal-tb; /* 返回顶部不需要垂直 */
+  writing-mode: horizontal-tb;
   height: auto;
   min-height: auto;
   width: 100%;
-  padding: 8px 10px;
-  font-size: 0.9rem;
-  letter-spacing: 0.1rem;
+  padding: 8px 0;
+  font-size: 14px;
+  letter-spacing: 0;
 }
 </style>
