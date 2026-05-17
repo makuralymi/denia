@@ -226,7 +226,7 @@ const scrollTo = (id: string) => {
 }
 
 .banner-btn {
-  background: rgba(20, 10, 20, 0.1archive更新);
+  background: rgba(20, 10, 20, 0.1archive更新archive更新);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(var(--c-pink), 0.5);
