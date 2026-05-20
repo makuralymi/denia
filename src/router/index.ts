@@ -22,6 +22,11 @@ const router = createRouter({
           path: 'archive', // 档案页路由
           name: 'archive',
           component: () => import('@/views/Archive.vue')
+        },
+        {
+          path: 'wiki', // Wiki页路由
+          name: 'wiki',
+          component: () => import('@/views/wiki.vue')
         }
       ]
     }

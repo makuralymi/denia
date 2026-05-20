@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- 最底层的 WebGL 动态背景 -->
     <div class="canvas-wrapper">
-      <canvas ref="canvasRef" class="webgl-canvas"></canvas>
+      <canvas class="webgl-canvas"></canvas>
     </div>
 
     <!-- 前端透明 UI 悬浮层 -->
@@ -25,7 +25,7 @@ import { useCanvas } from './composables/useCanvas';
 import MiniPlayer from './components/shared/MiniPlayer.vue';
 
 // 唤醒并挂载我们的 WebGL 引擎
-const { canvasRef } = useCanvas();
+useCanvas();
 </script>
 
 <style>

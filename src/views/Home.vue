@@ -1,13 +1,13 @@
 <template>
   <div class="home-layout">
-    <!-- 顶部导航栏，延续毛玻璃质感 -->
+    <!-- 顶部导航栏 -->
     <header class="top-nav glass-nav">
       <div class="logo">DENIA</div>
       
       <nav class="nav-items">
         <router-link to="/home" exact-active-class="active" class="nav-item">OVERVIEW</router-link>
         <router-link to="/home/archive" exact-active-class="active" class="nav-item">ARCHIVE</router-link>
-        <a href="#" class="nav-item">MODULES</a>
+        <router-link to="/home/wiki" exact-active-class="active" class="nav-item">WIKI</router-link>
       </nav>
 
       <div class="user-block">
