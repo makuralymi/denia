@@ -6,21 +6,44 @@
         {{ isNavCollapsed ? '◀' : '▶' }}
       </button>
       <div class="nav-content">
-        <button class="nav-btn" @click="scrollTo('basic-info')">基础资料</button>
-        <button class="nav-btn" @click="scrollTo('other-info')">其他信息</button>
-        <button class="nav-btn" @click="scrollTo('stats')">角色统计</button>
-        <button class="nav-btn" @click="scrollTo('battle-style')">战斗风格</button>
-        <button class="nav-btn" @click="scrollTo('skill-desc')">技能说明</button>
-        <button class="nav-btn" @click="scrollTo('skill-intro')">技能介绍</button>
+        <!-- 一级：基础资料 -->
+        <button class="nav-btn nav-l1" :class="{ expanded: navExpanded === 'basic' }" @click="toggleNavGroup('basic')">基础资料</button>
+        <div class="nav-l2-group" v-show="navExpanded === 'basic'">
+          <button class="nav-btn nav-l2" @click="scrollTo('other-info')">其他信息</button>
+          <button class="nav-btn nav-l2" @click="scrollTo('stats')">角色统计</button>
+          <button class="nav-btn nav-l2" @click="scrollTo('battle-style')">战斗风格</button>
+          <button class="nav-btn nav-l2" @click="scrollTo('skill-desc')">技能说明</button>
+        </div>
+        <!-- 一级：角色养成 -->
+        <button class="nav-btn nav-l1" :class="{ expanded: navExpanded === 'build' }" @click="toggleNavGroup('build')">角色养成</button>
+        <div class="nav-l2-group" v-show="navExpanded === 'build'">
+          <button class="nav-btn nav-l2" @click="scrollTo('skill-intro')">技能介绍</button>
+          <button class="nav-btn nav-l2" @click="scrollTo('resonance-chain')">共鸣链</button>
+          <button class="nav-btn nav-l2" @click="scrollTo('breakthrough-materials')">角色突破材料</button>
+          <button class="nav-btn nav-l2" @click="scrollTo('skill-materials')">技能突破材料</button>
+        </div>
+        <!-- 一级：角色档案 -->
+        <button class="nav-btn nav-l1" :class="{ expanded: navExpanded === 'archive' }" @click="toggleNavGroup('archive')">角色档案</button>
+        <div class="nav-l2-group" v-show="navExpanded === 'archive'">
+          <button class="nav-btn nav-l2" @click="scrollTo('ability-report')">共鸣能力鉴定报告</button>
+          <button class="nav-btn nav-l2" @click="scrollTo('precious-items')">珍贵之物</button>
+          <button class="nav-btn nav-l2" @click="scrollTo('character-story')">角色故事</button>
+        </div>
         <button class="nav-btn top-btn" @click="scrollTo('top')" title="返回顶部">▲</button>
       </div>
     </div>
 
     <!-- 顶部 Banner -->
     <div id="top" class="banner-section" :style="{ backgroundImage: `url(${currentBanner})` }">
+      <!-- 大标题 -->
+      <div class="wiki-hero">
+        <h1 class="wiki-title">wiki-DENIA</h1>
+        <p class="wiki-subtitle">数据来自官方库街区，解释权归其所有，感谢各位贡献者！</p>
+      </div>
       <div class="banner-actions">
         <button class="banner-btn" @click="scrollTo('basic-info')">基础资料</button>
         <button class="banner-btn" @click="scrollTo('skill-intro')">角色养成</button>
+        <button class="banner-btn" @click="scrollTo('character-archive')">角色档案</button>
       </div>
     </div>
 
@@ -86,11 +109,11 @@
 
         <!-- 其他信息 -->
         <div id="other-info" class="info-component">
-          <div class="component-header" :style="{ background: '#EFEDEA' }">
+          <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('otherInfo')">
             <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
             <div class="component-header-content">
               <span class="component-title-text">其他信息</span>
-              <button class="collapse-btn" @click="toggleCollapse('otherInfo')">
+              <button class="collapse-btn">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
                 </svg>
@@ -116,11 +139,11 @@
 
         <!-- 角色统计 -->
         <div id="stats" class="info-component">
-          <div class="component-header" :style="{ background: '#EFEDEA' }">
+          <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('stats')">
             <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)`, backgroundPosition: '100px 0' }"></div>
             <div class="component-header-content">
               <span class="component-title-text">角色统计</span>
-              <button class="collapse-btn" @click="toggleCollapse('stats')">
+              <button class="collapse-btn">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
                 </svg>
@@ -146,11 +169,11 @@
 
         <!-- 战斗风格 -->
         <div id="battle-style" class="info-component">
-          <div class="component-header" :style="{ background: '#EFEDEA' }">
+          <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('battleStyle')">
             <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
             <div class="component-header-content">
               <span class="component-title-text">战斗风格</span>
-              <button class="collapse-btn" :class="{ active: collapseState.battleStyle }" @click="toggleCollapse('battleStyle')">
+              <button class="collapse-btn" :class="{ active: collapseState.battleStyle }">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
                 </svg>
@@ -192,11 +215,11 @@
 
         <!-- 技能说明 -->
         <div id="skill-desc" class="info-component">
-          <div class="component-header" :style="{ background: '#EFEDEA' }">
+          <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('skillDesc')">
             <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
             <div class="component-header-content">
               <span class="component-title-text">技能说明</span>
-              <button class="collapse-btn" @click="toggleCollapse('skillDesc')">
+              <button class="collapse-btn">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
                 </svg>
@@ -228,11 +251,11 @@
 
         <!-- 技能介绍 -->
         <div class="info-component">
-          <div class="component-header" :style="{ background: '#EFEDEA' }">
+          <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('skillIntro')">
             <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)`, backgroundPosition: '97px 0' }"></div>
             <div class="component-header-content">
               <span class="component-title-text">技能介绍</span>
-              <button class="collapse-btn" @click="toggleCollapse('skillIntro')">
+              <button class="collapse-btn">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
                 </svg>
@@ -523,12 +546,12 @@
         </div>
 
         <!-- 共鸣链 -->
-        <div class="info-component">
-          <div class="component-header" :style="{ background: '#EFEDEA' }">
+        <div id="resonance-chain" class="info-component">
+          <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('resonanceChain')">
             <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
             <div class="component-header-content">
               <span class="component-title-text">共鸣链</span>
-              <button class="collapse-btn" @click="toggleCollapse('resonanceChain')">
+              <button class="collapse-btn">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
                 </svg>
@@ -613,12 +636,12 @@
         </div>
 
         <!-- 角色突破材料 -->
-        <div class="info-component">
-          <div class="component-header" :style="{ background: '#EFEDEA' }">
+        <div id="breakthrough-materials" class="info-component">
+          <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('breakthrough')">
             <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
             <div class="component-header-content">
               <span class="component-title-text">角色突破材料</span>
-              <button class="collapse-btn" @click="toggleCollapse('breakthrough')">
+              <button class="collapse-btn">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
                 </svg>
@@ -779,12 +802,12 @@
         </div>
 
         <!-- 技能突破材料 -->
-        <div class="info-component">
-          <div class="component-header" :style="{ background: '#EFEDEA' }">
+        <div id="skill-materials" class="info-component">
+          <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('skillMaterial')">
             <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)`, backgroundPosition: '100px 0' }"></div>
             <div class="component-header-content">
               <span class="component-title-text">技能突破材料</span>
-              <button class="collapse-btn" @click="toggleCollapse('skillMaterial')">
+              <button class="collapse-btn">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
                 </svg>
@@ -1090,16 +1113,16 @@
       </div>
 
     <!-- 模块：角色档案 -->
-    <div class="module glass-panel">
+    <div id="character-archive" class="module glass-panel">
       <h2 class="module-title">角色档案</h2>
 
       <!-- 共鸣能力鉴定报告 -->
-      <div class="info-component">
-        <div class="component-header" :style="{ background: '#EFEDEA' }">
+      <div id="ability-report" class="info-component">
+        <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('abilityReport')">
           <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
           <div class="component-header-content">
             <span class="component-title-text">共鸣能力鉴定报告</span>
-            <button class="collapse-btn" @click="toggleCollapse('abilityReport')">
+            <button class="collapse-btn">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
               </svg>
@@ -1133,12 +1156,12 @@
       </div>
 
       <!-- 珍贵之物 -->
-      <div class="info-component">
-        <div class="component-header" :style="{ background: '#EFEDEA' }">
+      <div id="precious-items" class="info-component">
+        <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('preciousItems')">
           <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)`, backgroundPosition: '101px 0' }"></div>
           <div class="component-header-content">
             <span class="component-title-text">珍贵之物</span>
-            <button class="collapse-btn" @click="toggleCollapse('preciousItems')">
+            <button class="collapse-btn">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
               </svg>
@@ -1181,12 +1204,12 @@
       </div>
 
       <!-- 角色故事 -->
-      <div class="info-component">
-        <div class="component-header" :style="{ background: '#EFEDEA' }">
+      <div id="character-story" class="info-component">
+        <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('characterStory')">
           <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
           <div class="component-header-content">
             <span class="component-title-text">角色故事</span>
-            <button class="collapse-btn" @click="toggleCollapse('characterStory')">
+            <button class="collapse-btn">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
               </svg>
@@ -1458,6 +1481,12 @@ const scrollTo = (id: string) => {
 const toggleNav = () => {
   isNavCollapsed.value = !isNavCollapsed.value
 }
+
+const navExpanded = ref('')
+
+const toggleNavGroup = (group: string) => {
+  navExpanded.value = navExpanded.value === group ? '' : group
+}
 </script>
 
 <style scoped>
@@ -1487,6 +1516,33 @@ const toggleNav = () => {
   background-position: center 20%;
   background-attachment: fixed;
   box-shadow: inset 0 -150px 100px -50px rgba(10, 5, 10, 0.9);
+}
+
+/* Hero 大标题 */
+.wiki-hero {
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.wiki-title {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.3rem;
+  text-shadow: 0 0 30px rgba(var(--c-pink), 0.6), 0 0 60px rgba(var(--c-deep-blue), 0.3);
+  margin: 0;
+}
+
+.wiki-subtitle {
+  font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.08rem;
+  margin-top: 1rem;
+  text-shadow: 0 0 10px rgba(var(--c-pink), 0.2);
 }
 
 .banner-actions {
@@ -1737,6 +1793,8 @@ const toggleNav = () => {
   position: relative;
   padding: 0.8rem 1.5rem;
   overflow: hidden;
+  cursor: pointer;
+  user-select: none;
 }
 
 .component-header-bg {
@@ -2128,6 +2186,44 @@ const toggleNav = () => {
   color: #fff;
   box-shadow: 0 0 15px rgba(var(--c-pink), 0.5);
   transform: translateX(-5px);
+}
+
+/* 一级导航 */
+.nav-l1 {
+  border-color: rgba(var(--c-pink), 0.5);
+  font-weight: 600;
+}
+
+.nav-l1.expanded {
+  background: rgba(var(--c-pink), 0.25);
+  border-color: rgb(var(--c-pink));
+  color: #fff;
+}
+
+/* 二级导航组 */
+.nav-l2-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: -2px 0 4px 0;
+  padding-left: 0;
+}
+
+/* 二级导航按钮 */
+.nav-l2 {
+  writing-mode: horizontal-tb;
+  min-height: auto;
+  height: auto;
+  width: 42px;
+  padding: 6px 4px;
+  font-size: 12px;
+  letter-spacing: 0;
+  border-color: rgba(var(--c-pink), 0.15);
+  background: rgba(20, 10, 20, 0.4);
+}
+
+.nav-l2:hover {
+  transform: translateX(-3px);
 }
 
 .top-btn {
