@@ -53,9 +53,13 @@
     <!-- 底部全局悬浮发光进度条 -->
     <div class="progress-bar-container" @click="seek">
       <div class="progress-track">
+        <!-- Doll 固定于进度条尾部 -->
+        <img :src="dollW" class="progress-doll-tail" />
         <div class="progress-fill" :style="{ width: progressPercent + '%' }">
           <!-- 进度条端点发光核心 -->
           <div class="progress-glow-head"></div>
+          <!-- Doll 跟随进度条头 -->
+          <img :src="dollB" class="progress-doll-head" />
           <!-- 随点粒子飘散 -->
           <div v-if="isPlaying" class="particle-emitter">
             <span class="p-1" style="--rand: 0.8"></span>
@@ -75,6 +79,11 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useAudioStore } from '@/stores/audioStore';
+import dollW from '@/canvas/effects/doll_w.png';
+import dollB from '@/canvas/effects/doll_b.png';
+
+const audioStore = useAudioStore();
 
 // 音频系统状态
 const audio = new Audio();
@@ -92,12 +101,13 @@ const playlist = ref<Song[]>([
   { name: '枯音染秽无凭裂章', url: '/audio/audio.mp3' },
   { name: '坠入虚无 (Decensus Ad Nihilum) - 鸣潮先约电台、Crywolf、kahoca', url: '/audio/audio2.mp3' },
   { name: '直到下次再见 (Dasvidaniya) - 鸣潮先约电台、Crywolf、Cxssidy', url: '/audio/audio3.mp3' },
+  { name: '予以宽慰的黑夜', url: '/audio/audio4.mp3' },
 
   // 预留位置，后续添加音频直接写在这里：
   // { name: 'SECOND ROUND', url: '/audio/audio1.mp3' },
   // { name: 'MAIN MENU', url: '/audio/audio2.mp3' }
 ]);
-const currentSongIndex = ref(0);
+const currentSongIndex = ref(2); // 默认播放 audio3
 const currentSong = computed(() => playlist.value[currentSongIndex.value]);
 
 // 计算进度条百分比
@@ -116,8 +126,12 @@ const formatTime = (seconds: number) => {
 
 const loadPlaylist = () => {
   if (playlist.value.length > 0) {
-    audio.src = playlist.value[0].url;
+    audio.src = playlist.value[currentSongIndex.value].url;
   }
+  audioStore.playlist = playlist.value;
+  audioStore.currentSongIndex = currentSongIndex.value;
+  // 自动播放
+  audio.play().catch(() => { /* 浏览器阻止自动播放时静默失败 */ });
 };
 
 const playSong = (index: number) => {
@@ -125,6 +139,7 @@ const playSong = (index: number) => {
   audio.src = playlist.value[index].url;
   audio.play();
   isPlaying.value = true;
+  audioStore.currentSongIndex = index;
 };
 
 const togglePlay = () => {
@@ -253,18 +268,21 @@ onMounted(() => {
 
   audio.addEventListener('timeupdate', () => {
     currentTime.value = audio.currentTime;
+    audioStore.currentTime = audio.currentTime;
   });
-  
+
   audio.addEventListener('durationchange', () => {
     duration.value = audio.duration;
+    audioStore.duration = audio.duration;
   });
-  
+
   audio.addEventListener('ended', () => {
     nextSong();
   });
-  
+
   audio.addEventListener('play', () => {
     isPlaying.value = true;
+    audioStore.isPlaying = true;
     if (!audioContext) {
       initAudioPath();
     }
@@ -273,6 +291,7 @@ onMounted(() => {
 
   audio.addEventListener('pause', () => {
     isPlaying.value = false;
+    audioStore.isPlaying = false;
     cancelAnimationFrame(animationFrameId); // 停止绘制
   });
 });
@@ -564,6 +583,30 @@ onUnmounted(() => {
   background: #fff;
   box-shadow: 0 0 20px 4px rgba(var(--c-pink), 0.9), 0 0 40px 10px rgba(var(--c-light-blue), 0.5);
   border-radius: 4px;
+}
+
+/* 跟随进度条的 Doll — 头部 (doll_b) */
+.progress-doll-head {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(40%, -85%);
+  width: 48px;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px rgba(250, 191, 253, 0.7));
+}
+
+/* 固定于进度条右侧尾部的 Doll (doll_w) */
+.progress-doll-tail {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(40%, -85%);
+  width: 48px;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(173, 206, 253, 0.5));
 }
 
 /* CSS 粒子散波发射器 */

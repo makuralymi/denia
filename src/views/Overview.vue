@@ -3,8 +3,14 @@
     <div class="content-placeholder">
       <p>Awaiting Instructions...</p>
     </div>
+
+    <LyricsOverlay />
   </div>
 </template>
+
+<script setup lang="ts">
+import LyricsOverlay from '@/components/shared/LyricsOverlay.vue';
+</script>
 
 <style scoped>
 .overview-container {
@@ -13,6 +19,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .content-placeholder p {
