@@ -141,7 +141,7 @@ watch(activeIndex, async (idx) => {
   position: absolute;
   top: 0;
   right: 0;
-  width: 40vw;
+  width: 36vw;
   height: 100%;
   pointer-events: none;
   z-index: 5;
@@ -169,7 +169,7 @@ watch(activeIndex, async (idx) => {
   max-height: 100%;
   overflow-y: hidden;
   scroll-behavior: smooth;
-  padding: 0 2.5rem 0 1.5rem;
+  padding: 0 0rem 0 0.5rem;
 }
 
 .lyrics-spacer {
