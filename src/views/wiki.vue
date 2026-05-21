@@ -777,8 +777,558 @@
             </div>
           </div>
         </div>
+
+        <!-- 技能突破材料 -->
+        <div class="info-component">
+          <div class="component-header" :style="{ background: '#EFEDEA' }">
+            <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)`, backgroundPosition: '100px 0' }"></div>
+            <div class="component-header-content">
+              <span class="component-title-text">技能突破材料</span>
+              <button class="collapse-btn" @click="toggleCollapse('skillMaterial')">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="component-body" v-show="!collapseState.skillMaterial">
+            <div class="stat-tabs">
+              <button v-for="(tab, i) in skillMaterialTabs" :key="i" class="stat-tab" :class="{ active: activeSkillMaterialTab === i }" @click="activeSkillMaterialTab = i">{{ tab }}</button>
+            </div>
+
+            <!-- 常态攻击 -->
+            <div class="skill-material-content" v-show="activeSkillMaterialTab === 0">
+              <div class="branch-section">
+                <p><strong class="text-bronze">分支强化材料消耗</strong></p>
+                <hr class="skill-divider" />
+                <p><strong>暴击伤害提升2.40%</strong></p>
+                <p>三阶突破</p>
+                <table class="info-table material-table">
+                  <colgroup><col style="width:50%"/><col style="width:50%"/></colgroup>
+                  <tbody>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x50000</td>
+                    </tr>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x3</td>
+                      <td class="material-cell"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr class="skill-divider" />
+                <p><strong>暴击伤害提升5.60%</strong></p>
+                <p>五阶突破</p>
+                <table class="info-table material-table">
+                  <colgroup><col style="width:50%"/><col style="width:50%"/></colgroup>
+                  <tbody>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x100000</td>
+                    </tr>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <table class="info-table data-table" style="width:100%">
+                <thead>
+                  <tr><th colspan="9">等级</th></tr>
+                  <tr><th>LV.2</th><th>LV.3</th><th>LV.4</th><th>LV.5</th><th>LV.6</th><th>LV.7</th><th>LV.8</th><th>LV.9</th><th>LV.10</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/7e8de832062d4ae49af023383823988420251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446635372963983360" target="_blank">低频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/240b390663b847cfaedbfb098e1f1ef620251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446634490008608768" target="_blank">拼凑的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x1500</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/7e8de832062d4ae49af023383823988420251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446635372963983360" target="_blank">低频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/240b390663b847cfaedbfb098e1f1ef620251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446634490008608768" target="_blank">拼凑的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x2000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/f35264e711614e09919332b06a8058a120251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633814536921088" target="_blank">中频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/cba83583c4fa43498aa086de31a6452b20251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633033238749184" target="_blank">断续的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x4500</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/f35264e711614e09919332b06a8058a120251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633814536921088" target="_blank">中频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/cba83583c4fa43498aa086de31a6452b20251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633033238749184" target="_blank">断续的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x6000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x16000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x5<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x30000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x50000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x70000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x4<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x6<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x100000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 共鸣技能 -->
+            <div class="skill-material-content" v-show="activeSkillMaterialTab === 1">
+              <div class="branch-section">
+                <p><strong class="text-bronze">分支强化材料消耗</strong></p>
+                <hr class="skill-divider" />
+                <p><strong>攻击提升1.80%</strong></p>
+                <p>二阶突破</p>
+                <table class="info-table material-table">
+                  <colgroup><col style="width:50%"/><col style="width:50%"/></colgroup>
+                  <tbody>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x50000</td>
+                    </tr>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x3</td>
+                      <td class="material-cell"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr class="skill-divider" />
+                <p><strong>攻击提升4.20%</strong></p>
+                <p>四阶突破</p>
+                <table class="info-table material-table">
+                  <colgroup><col style="width:50%"/><col style="width:50%"/></colgroup>
+                  <tbody>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x100000</td>
+                    </tr>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <table class="info-table data-table" style="width:100%">
+                <thead>
+                  <tr><th colspan="9">等级</th></tr>
+                  <tr><th>LV.2</th><th>LV.3</th><th>LV.4</th><th>LV.5</th><th>LV.6</th><th>LV.7</th><th>LV.8</th><th>LV.9</th><th>LV.10</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/7e8de832062d4ae49af023383823988420251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446635372963983360" target="_blank">低频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/240b390663b847cfaedbfb098e1f1ef620251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446634490008608768" target="_blank">拼凑的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x1500</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/7e8de832062d4ae49af023383823988420251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446635372963983360" target="_blank">低频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/240b390663b847cfaedbfb098e1f1ef620251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446634490008608768" target="_blank">拼凑的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x2000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/f35264e711614e09919332b06a8058a120251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633814536921088" target="_blank">中频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/cba83583c4fa43498aa086de31a6452b20251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633033238749184" target="_blank">断续的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x4500</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/f35264e711614e09919332b06a8058a120251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633814536921088" target="_blank">中频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/cba83583c4fa43498aa086de31a6452b20251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633033238749184" target="_blank">断续的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x6000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x16000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x5<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x30000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x50000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x70000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x4<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x6<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x100000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 共鸣回路 -->
+            <div class="skill-material-content" v-show="activeSkillMaterialTab === 2">
+              <div class="branch-section">
+                <p><strong class="text-bronze">分支强化材料消耗</strong></p>
+                <hr class="skill-divider" />
+                <p><strong>固有技能：伪物弥留</strong></p>
+                <p>二阶突破</p>
+                <table class="info-table material-table">
+                  <colgroup><col style="width:50%"/><col style="width:50%"/></colgroup>
+                  <tbody>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/f35264e711614e09919332b06a8058a120251223.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446633814536921088" target="_blank">中频锐棱声核</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x10000</td>
+                    </tr>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/cba83583c4fa43498aa086de31a6452b20251218.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446633033238749184" target="_blank">断续的弦线</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr class="skill-divider" />
+                <p><strong>固有技能：蚀刻繁彩</strong></p>
+                <p>四阶突破</p>
+                <table class="info-table material-table">
+                  <colgroup><col style="width:50%"/><col style="width:50%"/></colgroup>
+                  <tbody>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x20000</td>
+                    </tr>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <table class="info-table data-table" style="width:100%">
+                <thead>
+                  <tr><th colspan="9">等级</th></tr>
+                  <tr><th>LV.2</th><th>LV.3</th><th>LV.4</th><th>LV.5</th><th>LV.6</th><th>LV.7</th><th>LV.8</th><th>LV.9</th><th>LV.10</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/7e8de832062d4ae49af023383823988420251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446635372963983360" target="_blank">低频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/240b390663b847cfaedbfb098e1f1ef620251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446634490008608768" target="_blank">拼凑的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x1500</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/7e8de832062d4ae49af023383823988420251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446635372963983360" target="_blank">低频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/240b390663b847cfaedbfb098e1f1ef620251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446634490008608768" target="_blank">拼凑的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x2000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/f35264e711614e09919332b06a8058a120251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633814536921088" target="_blank">中频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/cba83583c4fa43498aa086de31a6452b20251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633033238749184" target="_blank">断续的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x4500</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/f35264e711614e09919332b06a8058a120251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633814536921088" target="_blank">中频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/cba83583c4fa43498aa086de31a6452b20251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633033238749184" target="_blank">断续的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x6000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x16000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x5<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x30000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x50000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x70000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x4<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x6<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x100000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 共鸣解放 -->
+            <div class="skill-material-content" v-show="activeSkillMaterialTab === 3">
+              <div class="branch-section">
+                <p><strong class="text-bronze">分支强化材料消耗</strong></p>
+                <hr class="skill-divider" />
+                <p><strong>攻击提升1.80%</strong></p>
+                <p>三阶突破</p>
+                <table class="info-table material-table">
+                  <colgroup><col style="width:50%"/><col style="width:50%"/></colgroup>
+                  <tbody>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x50000</td>
+                    </tr>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x3</td>
+                      <td class="material-cell"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr class="skill-divider" />
+                <p><strong>攻击提升4.20%</strong></p>
+                <p>五阶突破</p>
+                <table class="info-table material-table">
+                  <colgroup><col style="width:50%"/><col style="width:50%"/></colgroup>
+                  <tbody>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x100000</td>
+                    </tr>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <table class="info-table data-table" style="width:100%">
+                <thead>
+                  <tr><th colspan="9">等级</th></tr>
+                  <tr><th>LV.2</th><th>LV.3</th><th>LV.4</th><th>LV.5</th><th>LV.6</th><th>LV.7</th><th>LV.8</th><th>LV.9</th><th>LV.10</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/7e8de832062d4ae49af023383823988420251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446635372963983360" target="_blank">低频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/240b390663b847cfaedbfb098e1f1ef620251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446634490008608768" target="_blank">拼凑的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x1500</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/7e8de832062d4ae49af023383823988420251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446635372963983360" target="_blank">低频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/240b390663b847cfaedbfb098e1f1ef620251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446634490008608768" target="_blank">拼凑的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x2000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/f35264e711614e09919332b06a8058a120251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633814536921088" target="_blank">中频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/cba83583c4fa43498aa086de31a6452b20251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633033238749184" target="_blank">断续的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x4500</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/f35264e711614e09919332b06a8058a120251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633814536921088" target="_blank">中频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/cba83583c4fa43498aa086de31a6452b20251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633033238749184" target="_blank">断续的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x6000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x16000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x5<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x30000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x50000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x70000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x4<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x6<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x100000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 变奏技能 -->
+            <div class="skill-material-content" v-show="activeSkillMaterialTab === 4">
+              <div class="branch-section">
+                <p><strong class="text-bronze">分支强化材料消耗</strong></p>
+                <hr class="skill-divider" />
+                <p><strong>暴击伤害提升2.40%</strong></p>
+                <p>三阶突破</p>
+                <table class="info-table material-table">
+                  <colgroup><col style="width:50%"/><col style="width:50%"/></colgroup>
+                  <tbody>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x50000</td>
+                    </tr>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x3</td>
+                      <td class="material-cell"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr class="skill-divider" />
+                <p><strong>暴击伤害提升5.60%</strong></p>
+                <p>五阶突破</p>
+                <table class="info-table material-table">
+                  <colgroup><col style="width:50%"/><col style="width:50%"/></colgroup>
+                  <tbody>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x100000</td>
+                    </tr>
+                    <tr>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x3</td>
+                      <td class="material-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <table class="info-table data-table" style="width:100%">
+                <thead>
+                  <tr><th colspan="9">等级</th></tr>
+                  <tr><th>LV.2</th><th>LV.3</th><th>LV.4</th><th>LV.5</th><th>LV.6</th><th>LV.7</th><th>LV.8</th><th>LV.9</th><th>LV.10</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/7e8de832062d4ae49af023383823988420251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446635372963983360" target="_blank">低频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/240b390663b847cfaedbfb098e1f1ef620251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446634490008608768" target="_blank">拼凑的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x1500</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/7e8de832062d4ae49af023383823988420251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446635372963983360" target="_blank">低频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/240b390663b847cfaedbfb098e1f1ef620251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446634490008608768" target="_blank">拼凑的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x2000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/f35264e711614e09919332b06a8058a120251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633814536921088" target="_blank">中频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/cba83583c4fa43498aa086de31a6452b20251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633033238749184" target="_blank">断续的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x4500</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/f35264e711614e09919332b06a8058a120251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633814536921088" target="_blank">中频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/cba83583c4fa43498aa086de31a6452b20251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446633033238749184" target="_blank">断续的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x6000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x16000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/421a962ae70d40eea380a1c5353786ee20251223.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636856481062912" target="_blank">高频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/bc4a781863f94e32b03b171dacdb2c9720251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446636379580309504" target="_blank">凝固的弦线</a>x5<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x30000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x2<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x50000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x3<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x70000</td>
+                    <td><img src="https://prod-alicdn-community.kurobbs.com/forum/a93ae52da475488e9a4e5e8427f6cc9520251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446638304712638464" target="_blank">全频锐棱声核</a>x4<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/81cb97c4ce7442919dbc51c1c2ffe0f320251218.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1446637577485971456" target="_blank">如歌的弦线</a>x6<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/abbbb6965cf9467ca57e00cad718092f20260428.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498782731192119296" target="_blank">质问的我们</a>x1<br/><img src="https://prod-alicdn-community.kurobbs.com/forum/c937896ee77e484dbe1a397956d4f13320240518.png" width="64" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1241548696255807488" target="_blank">贝币</a>x100000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- 模块：角色档案 -->
+    <div class="module glass-panel">
+      <h2 class="module-title">角色档案</h2>
+
+      <!-- 共鸣能力鉴定报告 -->
+      <div class="info-component">
+        <div class="component-header" :style="{ background: '#EFEDEA' }">
+          <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
+          <div class="component-header-content">
+            <span class="component-title-text">共鸣能力鉴定报告</span>
+            <button class="collapse-btn" @click="toggleCollapse('abilityReport')">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="component-body" v-show="!collapseState.abilityReport">
+          <div class="component-content-text">
+            <p><strong class="text-bronze" style="font-size:18px">共鸣能力：</strong>泡影视阈</p>
+            <p><strong class="text-bronze" style="font-size:18px">频谱检验报告</strong></p>
+            <hr class="skill-divider" />
+            <p>「调自深空联合：星炬学院学生档案」</p>
+            <p>「共鸣能力检验报告 RA2499-G」</p>
+            <p>学生姓名：达妮娅</p>
+            <p>是否具有适格者资质：否</p>
+            <p>共鸣能力概述：受试样本拉贝尔曲线波动规律、具有显著周期性特征，检测结果判断为先天型共鸣者，声痕胸口。</p>
+            <p>根据举荐方提供的档案，对象能够释放含有回音能量的泡泡，从而提供防护或战斗支援。必要情况下，也可以通过一次性释放泡泡中的回音能量进行爆破。</p>
+            <p>此外，根据检测，这种泡泡有着独特的流体结构，除基本防护外，也能够起到类似隧者涂层的虚质隔绝作用。</p>
+            <p class="text-italic">"她那用来释放泡泡的装置不是从呜呜物流的广告里买的吗？我侄女也买过同款！那种泡泡怎么可能抵挡虚质？"</p>
+            <p class="text-italic">"当初到底是怎么归档的！我的天……这份档案里有半句话是真的吗？"</p>
+            <p><strong class="text-bronze" style="font-size:18px">超频诊断报告</strong></p>
+            <hr class="skill-divider" />
+            <p>受试样本拉贝尔波形波形检测图呈椭圆形波动，时域表示稳定，未见任何异常波动倾向。检测结果判断为正常阶段。</p>
+            <p>诊断结果：超频临界值正常，稳定性高，暂无超频风险。</p>
+            <p>无过往超频史，拉贝尔曲线稳定。</p>
+            <p>暂无需心理辅导。</p>
+            <p class="text-italic">"无过往超频风险和过往超频史？你见过把虚质揉成方块拿来砸人的共鸣者吗？绯雪的战斗记录里她可是连声痕都裂开了！"</p>
+            <p class="text-italic">"行了……你这档案我是一个字也不会信了，阿里曼，把黯原那边找到的记录发给我！"</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 珍贵之物 -->
+      <div class="info-component">
+        <div class="component-header" :style="{ background: '#EFEDEA' }">
+          <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)`, backgroundPosition: '101px 0' }"></div>
+          <div class="component-header-content">
+            <span class="component-title-text">珍贵之物</span>
+            <button class="collapse-btn" @click="toggleCollapse('preciousItems')">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="component-body" v-show="!collapseState.preciousItems">
+          <div class="stat-tabs">
+            <button v-for="(tab, i) in preciousItemTabs" :key="i" class="stat-tab" :class="{ active: activePreciousTab === i }" @click="activePreciousTab = i">{{ tab }}</button>
+          </div>
+          <div class="component-content-text" v-show="activePreciousTab === 0">
+            <p><strong style="font-size:24px">「骗术师」<img src="https://prod-alicdn-community.kurobbs.com/forum/496a03d9f025493f8128ea52387831f820260520.png" width="92" alt="" /></strong></p>
+            <hr class="skill-divider" />
+            <p>达妮娅随身携带的玩偶。与平时见到的光鲜样子不同，破旧的身躯上挤满了手工缝补的痕迹，用于填充内部的虚质早已消失不见。</p>
+            <p class="text-italic">"一个破碎又固执的容器，曾被世界所感知，所塑造——如今它正不断央求着：请您带给我一颗心，随便什么样的心都好。"</p>
+          </div>
+          <div class="component-content-text" v-show="activePreciousTab === 1">
+            <p><strong style="font-size:24px">星炬纪念相册<img src="https://prod-alicdn-community.kurobbs.com/forum/872cb5ecdceb47a5a0ccbc3afaea26a720260520.png" width="92" alt="" /></strong></p>
+            <hr class="skill-divider" />
+            <p>被精心保管的相册，贴满了各种装饰，看得出相册的主人很珍视它。</p>
+            <p>星炬学院的摄影同好会为每位成员都准备了一份个人影集，用于记录学生们在校园活动中的回忆。可这本相册里的内容大都是些集体合影，达妮娅总是露出微笑，一言不发地站在角落里……她通过这种方式来赚取学分。</p>
+            <p class="text-italic">"荒野总是沉默不语——也许它本就什么都看不到、听不到，也不在乎我们说些什么，它只是延伸、延伸，向着无穷的远方延伸。"</p>
+          </div>
+          <div class="component-content-text" v-show="activePreciousTab === 2">
+            <p><strong style="font-size:24px">「造梦者」<img src="https://prod-alicdn-community.kurobbs.com/forum/42de916b64d34697b80bb2f4f5d37ea020260520.png" width="92" alt="" /></strong></p>
+            <hr class="skill-divider" />
+            <p>用于制造巨大泡泡的装置，除造型比较梦幻外，并没有什么特别之处。</p>
+            <p>比起武器，更像是玩具。</p>
+            <p>达妮娅将虚质藏在泡泡之中，伪装出可以守护他人的美好假象。</p>
+            <p class="text-italic">"其实阿列夫一从不曾对我们抱有敌意，祂只是对一切都漠不关心，在祂的尺度上，生命与希望都微不足道、毫无意义。可祂也因此永远无法理解，为何虚质空间的黑暗会充满色彩——因为那是来自一整片宇宙残骸的，早在万亿年前就死去的光。那是群星们存在过的证明。"</p>
+          </div>
+          <div class="component-content-text" v-show="activePreciousTab === 3">
+            <p><strong style="font-size:24px"><a href="https://wiki.kurobbs.com/mc/item/1498831545168896000" target="_blank">夺目甜蜜</a><img src="https://prod-alicdn-community.kurobbs.com/forum/aa80f6ebf013462390b5a04a5d9f824c20260520.png" width="92" alt="" /></strong></p>
+            <hr class="skill-divider" />
+            <p class="text-muted">提高队伍中所有共鸣者28%治疗效果加成，持续时间30分钟，在多人游戏中仅对自己的角色生效。</p>
+            <p>达妮娅在料理课上完成的创作，由于课上一直忙于试吃，最后只得选择果酱这种工序简易的料理。</p>
+            <p>这一款果酱的糖分超标，腌制时间不足，熬制火候过大，导致成品最终未能充分混合口感与甜味。不过由于造型独特且有创意，适合拍照打卡留念，最后经同学们投票侥幸获得了不错的分数。<br/>"吃起来是甜甜的，看起来卖相也不错，这样就差不多了吧？嗯？口感和风味？抱歉，我不太明白你在说什么。"</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 角色故事 -->
+      <div class="info-component">
+        <div class="component-header" :style="{ background: '#EFEDEA' }">
+          <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
+          <div class="component-header-content">
+            <span class="component-title-text">角色故事</span>
+            <button class="collapse-btn" @click="toggleCollapse('characterStory')">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="component-body" v-show="!collapseState.characterStory">
+          <div class="stat-tabs">
+            <button v-for="(tab, i) in storyTabs" :key="i" class="stat-tab" :class="{ active: activeStoryTab === i }" @click="activeStoryTab = i">{{ tab }}</button>
+          </div>
+          <div class="component-content-text story-content" v-show="activeStoryTab === 0">
+            <p><strong class="text-bronze" style="font-size:18px">礼物</strong></p>
+            <hr class="skill-divider" />
+            <p>对于将她抚养长大的人们而言，"达妮娅"只是残星会资产的一部分。她的生命，是会长手中的一枚筹码。</p>
+            <p>&nbsp;</p>
+            <p>可"达妮娅"，严格来说却并不能算是一个名字。</p>
+            <p>在女孩出生的地区，人们常在道别时说达斯维达尼亚，意味着"直到下次再见"。</p>
+            <p>于人而言，名字是除生命外父母赠与子嗣的第一项恩赐，此后子嗣将以一个崭新个体的身份面对世界，形貌日渐完整，名字也愈发具有指代意味。</p>
+            <p>女孩将达妮娅选为自己的名字，是因为对她而言，这是家人能留给她的唯一礼物。</p>
+            <p>哪怕那只是一片属于无根浮萍的、奢侈的梦。</p>
+            <p>她查询过自己的诞生记录，也曾质疑过自己并非被人工制造的存在，但最后能找到的，依然只有记忆里那幅模糊的道别景象。</p>
+            <p>她无法通过这份记忆判断什么，每当她和会长提起这件事时，会长都告诉她：记忆并不可靠，忘了吧，一无所知对你才是最好的结果。</p>
+            <p>也许会长说的不无道理。</p>
+            <p>在她和娜斯塔霞聊起朋友们的名字时，她得知了那些藏在称呼背后的祈愿与故事：无论是祝福平安喜乐的，寄予理想抱负的，归根结底，大抵都是通向幸福的。可唯独问起"达妮娅"是什么含义时，她没能得到正面回应。</p>
+            <p>娜斯塔霞不想说，她也就不再追问了。在对人类进行观察与模仿的一年里，她早已深谙藏匿与谎言的原理。</p>
+            <p>也许，这世上真的有些无迹可寻的事物。</p>
+            <p>达妮娅甚至无法判断这记忆究竟属于自己，还是来自制造自己的某个原体……甚至，只是被残星会植入的，用于令她屈从的伪证。</p>
+            <p>女孩听残星会的研究人员提过，构成人体的细胞和物质其实每过一些年就会更换一遍，但生命的独特之处却在于，无论过去多久，都会留下些被不断修饰的东西。</p>
+            <p>特别是那些再也找不回来路的人……只要是留在记忆里的，哪怕是一种嗅觉都想铭刻成意义，所以有人喜欢看暴雨，有人钟情一段并不特别的旋律，因为人总是擅长用非理性的行为表达情绪，然后故作姿态地展露理性的自己。</p>
+            <p>或许，世界上真的曾经有一个与母亲挥手告别的，名为"达妮娅"的女孩。</p>
+            <p>但，那真的是她吗？</p>
+          </div>
+          <div class="component-content-text story-content" v-show="activeStoryTab === 1">
+            <p><strong class="text-bronze" style="font-size:18px">荒芜</strong></p>
+            <hr class="skill-divider" />
+            <p>依偎着坚实、冰冷的虚质舱壁，气泡和带有腥味的液体一起涌入达妮娅的口鼻。</p>
+            <p>滴答，滴答，滴答。</p>
+            <p>感官逐渐变得迟钝，时间被缓缓拉得绵长。</p>
+            <p>她感受到那些构成自己的事物正在被分隔开：她的频率破裂成千丝万缕的线，身躯溶解为污浊汇入海洋——随后，她升腾为穿越世界的大雾与风，从东吹到西，从北刮到南，拂过没有色彩的荒原，直到抵达那片再熟悉不过的、腐烂的星空。</p>
+            <p>而死寂的世界一如既往地凝视着她，一言不发。</p>
+            <p>&nbsp;</p>
+            <p>当会长选择达妮娅作为接受阿列夫一力量的"容器"时，除身体素质和频率适应性外，最重要的一点是：相比其他那些拥有丰富人生和情感的共鸣者，她做到了一无所有。而一无所有的人，对于自己和世界最大的感受往往就是"无意义"，这点与阿列夫一的存在逻辑相符。</p>
+            <p>于是，就如同预期的那样，达妮娅成功地接受了这份力量的馈赠，她在虚质空间中与阿列夫一短暂地对视，那些虚质自此开始流经她的血管与脏器，赋予了她操纵虚质粒子，以及链接虚质空间的能力。</p>
+            <p>那时，虚无曾一度让她感到寂静、熟悉和因此而生的心安。</p>
+            <p>可后来，随着计划一点点推进，残星会却观测到达妮娅和虚无鸣式之间的共鸣强度正在迅速走低。</p>
+            <p>力量本身并无变化，出现问题的，是原本被认定是空洞而纯粹的容器：毫无疑问，达妮娅并没有做到真正意义上的完美。</p>
+            <p>在模仿人类行为和情绪的过程中，她获得了一颗脆弱而痛苦的心。</p>
+            <p>弱者的心。</p>
+            <p>这样的她，注定无法成为阿列夫一在此世的化身。因此，残星会需要一个强大到足以驾驭这份"虚无"的内容物来填充躯体，以此来完成制造阿列夫一共鸣者的最终一步。</p>
+            <p>而达妮娅，也早就知道了自己的最终结局。</p>
+            <p>只是，当那一天来临的时候，又该怎样评判自己迄今为止的生命呢？</p>
+            <p>一个被驾驭操纵的傀儡，一个扭曲可怖的怪物……或者，就只是一滴水落进大海里，无人在意。</p>
+            <p>有时她会回想起在星炬学院度过的那些时光。那个在人群中露出意料之外的笑脸的女孩，那些留在别人记忆里轻笑的，或是懒散或是慌张的女孩——那真的是她吗？</p>
+            <p>但，那又不是她吗？</p>
+          </div>
+          <div class="component-content-text story-content" v-show="activeStoryTab === 2">
+            <p><strong class="text-bronze" style="font-size:18px">明昼</strong></p>
+            <hr class="skill-divider" />
+            <p>笑是一种很方便的工具，它能以廉价的方式拉进你和别人的距离。</p>
+            <p>&nbsp;</p>
+            <p>第一次见到西格莉卡是在某次分组课题里，那时达妮娅坐在教室的一角，用手指盘卷着耳畔的头发，窥视着同学们两两组队时的样子。</p>
+            <p>午后的微风吹过门廊，将载具场的车声，广场的喧嚣声糅杂起来，吹动墙上飞行雪绒歌友会的海报，发出噼啪声响。</p>
+            <p>一个拘谨的声音忽然找到了她，将她从片刻的惬意中惊醒。</p>
+            <p>"你愿意和我一起完成课题吗，达妮娅同学？"</p>
+            <p>达妮娅转过头，看到了那位双手倒剪在身后的橙发少女。她习惯性地歪了歪头，确认对方的确是在询问自己后，便将脸上的笑容抹得更深了些，回应道："当然可以呀，不过，你为什么会找到我呢，西格莉卡？"</p>
+            <p>西格莉卡告诉她：虽然达妮娅喜欢一个人来往，但在看到同学们吵闹时却会露出幸福的微笑，所以，她觉得达妮娅应该是个很温柔的人。她想和这样的人成为朋友。</p>
+            <p>温柔。</p>
+            <p>达妮娅后来仔细研究过这个词的含义，在听到了会长的解释以后，她确信这个词用在她身上有强烈的讽刺意味。</p>
+            <p>如果能让未来的达妮娅再选一次，或许她会拒绝那个请求吧。不曾相遇，便少了许多麻烦。</p>
+            <p>可那一刻她却只是点了点头，笑着和西格莉卡说，"好"。</p>
+            <p>&nbsp;</p>
+            <p>前些天，娜斯塔霞和她讲过的话仍停留在耳畔——其实大多数人并不是不害怕死亡……大家只是，尽量不去想。</p>
+            <p>不去想，不去看，不去听，不去思考。</p>
+            <p>达妮娅发现，在星炬学院里似乎有什么横亘在人们与死亡之间，为人们遮蔽了它。</p>
+            <p>白昼里青春奔忙，每分每秒都有新事物等待发掘；而到了夜晚，人们仰望星图，观看被莫宁教授投影出来的梦想——人们就这样被幸福遮蔽了感知，无法认清祂眼瞳里的残忍真相。</p>
+            <p>可是，梦终究会醒。祂总有一天会来。</p>
+            <p>那时娜斯塔霞揉着她的头发，告诉她，其实大多数孩子是不会思考这些事情的，你还年轻，还有很棒的未来去见证，你应该像其他同龄人一样更吵闹更快乐一点，而不是每天躲在图书馆里补觉，或者和她这个图书管理员探讨很悲伤的话题。</p>
+            <p>"死亡是人生的终极命题，可你思考这些思考得太早了，达妮娅。你还没找到那条真正属于你的道路。"</p>
+            <p>&nbsp;</p>
+            <p>达妮娅不知道娜斯塔霞那时说的话是什么意思。她能做的，只有自那以后越来越少地出现在那里。</p>
+            <p>她不想让娜斯塔霞悲伤。</p>
+          </div>
+          <div class="component-content-text story-content" v-show="activeStoryTab === 3">
+            <p><strong class="text-bronze" style="font-size:18px">群魔</strong></p>
+            <hr class="skill-divider" />
+            <p>会长身边的人，或多或少都听过那个老套的故事。</p>
+            <p>从前，有个阴差阳错地成了大英雄的蠢货，他为了拯救那些陷入苦难的人，背负了不该属于自己的、难以想象的代价……</p>
+            <p>会监们对故事主人公的态度各不相同。嘲弄，憎恶，感慨，遗憾——有的付之一笑，有的听若惘闻。</p>
+            <p>&nbsp;</p>
+            <p>而会长口中那个能招来奇迹的名字，于达妮娅而言却只是个遥远而模糊的谎言。</p>
+            <p>达妮娅不知道自己能否算"陷入苦难的人"，只是当她提起那个人时，会长带着几分哂笑与自嘲地和她说：其实我也觉得他应该出现在这。不过既然他没来，也就说明他或许并不如你祈望的那般全知全能。</p>
+            <p>可惜啊，达妮娅，看来你所需要的那个神，却并不需要你啊。</p>
+            <p>&nbsp;</p>
+            <p>可其实达妮娅从未觉得那应该是她的神。她只觉得那个人很可怜。</p>
+            <p>如果一切真如会长所说，那么被奉为救世主的人，也不过是同样被束缚在框架里的囚徒，不过是被遗弃在世界上的，会流血，会悲伤，会死去的人。</p>
+            <p>也正因此，会长和那个人都没能理解的一件事就是——哪怕那时没有会长留给她的命令，她同样会选择挡在隧锚前。</p>
+            <p>因为达妮娅得不到答案。</p>
+            <p>如果追求理想的人注定支付更多代价，那是不是说明那个理想本身就是错的？</p>
+            <p>毕竟，在那个人看不见的角落里，总有人遵循着更精致的规则生存，他们利用、背叛，一边享用着这个被所守护的世界，一边嘲弄着那些冲向风暴的人。<br/>为什么世界总是对善良的人露出獠牙？为什么总是那些用价值衡量一切的人笑到最后？</p>
+            <p>而一个连自己的过去都能轻易抛弃的人，又到底是为了什么，才会放弃如今来之不易的一点幸福，去替所有人面对阿列夫一这样荒诞恐怖的事物？</p>
+            <p>只是为了守护吗？但又有谁能理解？当那个人倒下之后又该如何？</p>
+            <p>当深空联合的计划已经能救下大多数人时……那个人在坚持的东西，又到底是什么？</p>
+            <p>&nbsp;</p>
+            <p>很多时候，达妮娅藏在层层伪装后的思维并不复杂。</p>
+            <p>她只是觉得，在那个人、这个世界，或者她自己之间，至少有一个出了问题。</p>
+          </div>
+          <div class="component-content-text story-content" v-show="activeStoryTab === 4">
+            <p><strong class="text-bronze" style="font-size:18px">谎言</strong></p>
+            <hr class="skill-divider" />
+            <p>达妮娅的意识在黑暗中无限坠落。</p>
+            <p>&nbsp;</p>
+            <p>将阿列夫一的最后一块碎片收纳进声痕后，她便再难维系自己的存在形式。虚质又一次淹没了她，就像过去千百次体验过的那样，意识一点点变得缓慢，时间被拉得绵长。</p>
+            <p>是啊，开始和结尾总是如此相似，一切都刚刚好，足以结成一个完美的圆。</p>
+            <p>可又与当初来到这里时不同——达妮娅发现自己不知为何停止了颤抖。呼吸变得平稳，胸腔内不再满是忧怖。</p>
+            <p>再次对视时，她向着那只空洞眼眸缓缓地伸出手。随后，尝试触碰什么的手攥在一起，她将食指和中指张开，对着瞳孔的正中央，做了一个瞄准的手势。</p>
+            <p>她发现原来阿列夫一是这样可笑的存在。</p>
+            <p>在无意义的世界中诞生的神明，自然也无法拥有任何东西。虚无的本能驱使祂渴望一切，但无论吞下什么，毁灭什么，祂都还是那副样子，在永恒寂静的世界里孤独地渴求，永远得不到餍足，留不下任何事物。</p>
+            <p>&nbsp;</p>
+            <p>作为嘲弄的依据，达妮娅觉得自己与祂的根本区别就是：如今她已有了一颗属于自己的心。</p>
+            <p>即便那颗心渺小，脆弱，在时间的尺度上，转瞬即逝。</p>
+            <p>但就这样一颗毫无意义的心，让她开始像其他人一样期待起明天。</p>
+            <p>总有人心甘情愿地为了一个谎言活着，就像某个令她挂碍的、讨厌的人说的那样，其实，是心决定着我们是谁。而一旦有了一颗心，人也就有了选择权。就像人类庆祝生日，是因为自那一天以后，人短暂地获得记忆与形体，得以从虚无中逃离。随后，人类会感受世界与幸福，与他人建立联系，用来创造一些虚无以外的东西。</p>
+            <p>&nbsp;</p>
+            <p>此刻，达妮娅闭上眼睛，想象起那些仍在索拉里斯大地上奔走的朋友——西格莉卡在日落的原野上追逐飞鸟，娜斯塔霞在图书馆整理老去的典籍，而那个被自己欺骗过的、常年漂泊的人，正收拾着行囊，即将奔赴远方。</p>
+            <p>达妮娅忽然觉得有些好笑，她想学着那个人的语气一本正经地说：</p>
+            <p>"愿他们每个人都幸福、快乐、自由。</p>
+            <p>愿他们每个人都能实现自己的愿望。"</p>
+            <p>但话到嘴边，又觉得矫情。</p>
+            <p>于是，这样就好。</p>
+            <p>这世上真正属于达妮娅的东西很少，但至少现在，不再作为什么容器，什么样本，什么筹码，也无关那些被赋予的虚无、命令与谎言。</p>
+            <p>她只是衷心地祝愿。自此以后，她将与他们同在，再不分离。</p>
+            <p>达妮娅，已找到自己的路。</p>
+            <p>——</p>
+            <p>砰。</p>
+            <p>像一场玩笑——无限坠落的黑暗，忽地有了尽头。</p>
+            <p>昏冥中，有人轻轻叹了口气，似是等了许久。</p>
+            <p>&nbsp;</p>
+          </div>
+        </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 
@@ -791,6 +1341,12 @@ const activeImageTab = ref(0)
 const activeStatTab = ref(0)
 const activeSkillTab = ref(0)
 const activeBreakthroughTab = ref(0)
+const activeSkillMaterialTab = ref(0)
+const skillMaterialTabs = ['常态攻击', '共鸣技能', '共鸣回路', '共鸣解放', '变奏技能']
+const activePreciousTab = ref(0)
+const preciousItemTabs = ['「骗术师」', '星炬纪念相册', '「造梦者」', '特殊料理']
+const activeStoryTab = ref(4)
+const storyTabs = ['礼物', '荒芜', '明昼', '群魔', '谎言']
 
 const roleBg = ref('https://prod-alicdn-community.kurobbs.com/forum/cbe1a0d853d14e5aaac4c84c7d28e74d20260401.png?x-oss-process=image/format,webp')
 const attrIcon = ref('https://prod-alicdn-community.kurobbs.com/forum/a8a304ec837d4c22bc13cc7aa3c7f72420260401.png')
@@ -879,7 +1435,11 @@ const collapseState = reactive({
   skillDesc: false,
   skillIntro: false,
   resonanceChain: false,
-  breakthrough: false
+  breakthrough: false,
+  skillMaterial: false,
+  abilityReport: false,
+  preciousItems: false,
+  characterStory: false
 })
 
 const toggleCollapse = (key: keyof typeof collapseState) => {
@@ -1218,6 +1778,12 @@ const toggleNav = () => {
 .component-body {
   background: rgba(0, 0, 0, 0.3);
   padding: 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.component-content-text {
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.8;
 }
 
 /* 表格 */
@@ -1238,7 +1804,7 @@ const toggleNav = () => {
   background: rgba(var(--c-deep-blue), 0.15);
   text-align: center;
   font-weight: 600;
-  color: #b8a89a;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .value-cell {
@@ -1466,6 +2032,23 @@ const toggleNav = () => {
   color: #f1c40f;
   font-weight: 600;
   text-decoration: underline;
+}
+
+.text-italic {
+  color: #34495e;
+  font-style: italic;
+}
+
+.text-muted {
+  color: #aaa;
+}
+
+.story-content {
+  line-height: 1.5;
+}
+
+.story-content p {
+  margin: 0.4rem 0;
 }
 
 /* 导航 */
