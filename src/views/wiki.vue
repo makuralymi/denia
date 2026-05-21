@@ -29,6 +29,16 @@
           <button class="nav-btn nav-l2" @click="scrollTo('precious-items')">珍贵之物</button>
           <button class="nav-btn nav-l2" @click="scrollTo('character-story')">角色故事</button>
         </div>
+        <!-- 一级：角色攻略 -->
+        <button class="nav-btn nav-l1" :class="{ expanded: navExpanded === 'guide' }" @click="toggleNavGroup('guide')">角色攻略</button>
+        <div class="nav-l2-group" v-show="navExpanded === 'guide'">
+          <button class="nav-btn nav-l2" @click="scrollTo('guide-battle-style')">战斗风格</button>
+          <button class="nav-btn nav-l2" @click="scrollTo('guide-build')">角色养成</button>
+          <button class="nav-btn nav-l2" @click="scrollTo('guide-mechanics')">角色机制</button>
+          <button class="nav-btn nav-l2" @click="scrollTo('guide-echo')">声骸套装推荐</button>
+          <button class="nav-btn nav-l2" @click="scrollTo('guide-weapon')">武器推荐</button>
+          <button class="nav-btn nav-l2" @click="scrollTo('guide-team')">编队&队伍轴推荐</button>
+        </div>
         <button class="nav-btn top-btn" @click="scrollTo('top')" title="返回顶部">▲</button>
       </div>
     </div>
@@ -43,6 +53,7 @@
       <div class="banner-actions">
         <button class="banner-btn" @click="scrollTo('basic-info')">基础资料</button>
         <button class="banner-btn" @click="scrollTo('skill-intro')">角色养成</button>
+        <button class="banner-btn" @click="scrollTo('character-guide')">角色攻略</button>
         <button class="banner-btn" @click="scrollTo('character-archive')">角色档案</button>
       </div>
     </div>
@@ -1351,6 +1362,211 @@
         </div>
       </div>
     </div>
+
+  <!-- 模块：角色攻略 -->
+  <div id="character-guide" class="module glass-panel">
+    <h2 class="module-title">角色攻略</h2>
+    <p class="guide-notice">攻略内容仅供当期参考</p>
+
+    <!-- 战斗风格 -->
+    <div id="guide-battle-style" class="info-component">
+      <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('guideBattleStyle')">
+        <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
+        <div class="component-header-content">
+          <span class="component-title-text">战斗风格</span>
+          <button class="collapse-btn"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/></svg></button>
+        </div>
+      </div>
+      <div class="component-body" v-show="!collapseState.guideBattleStyle">
+        <table class="info-table battle-table">
+          <colgroup><col style="width:15%"/><col style="width:85%"/></colgroup>
+          <tbody>
+            <tr><td class="battle-icon-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/a73a1f65f9084169b679effb13adfa0020260424.png" width="64" alt="" /></td><td class="value-cell"><strong>快速协奏</strong><br/>拥有较高的协奏效率</td></tr>
+            <tr><td class="battle-icon-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/f2186ee796e246ce86b71c9e6e6a061820260424.png" width="64" alt="" /></td><td class="value-cell"><strong>共鸣解放伤害</strong><br/>共鸣解放伤害较高</td></tr>
+            <tr><td class="battle-icon-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/ee7e086eb138499abcd51c435c1e6a5020260424.png" width="64" alt="" /></td><td class="value-cell"><strong>牵引</strong><br/>可以将一定范围内的目标牵引至特定位置</td></tr>
+            <tr><td class="battle-icon-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/4fe87c9e8fa9451bbe90c4c5ebb005bf20260424.png" width="64" alt="" /></td><td class="value-cell"><strong>聚爆</strong><br/>可以运用聚爆效应</td></tr>
+            <tr><td class="battle-icon-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/1ffb8741df8940cebc17784b789ca79b20260424.jpg" width="64" alt="" /></td><td class="value-cell"><strong>谐度破坏增幅</strong><br/>可以提升队伍内特定角色的谐度破坏增幅</td></tr>
+            <tr><td class="battle-icon-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/c2b17d065da342199bba632253712a6920260424.jpg" width="64" alt="" /></td><td class="value-cell"><strong>集谐响应</strong><br/>根据自身谐度破坏增幅对目标造成最终伤害提升</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 角色养成 -->
+    <div id="guide-build" class="info-component">
+      <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('guideBuild')">
+        <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
+        <div class="component-header-content">
+          <span class="component-title-text">角色养成</span>
+          <button class="collapse-btn"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/></svg></button>
+        </div>
+      </div>
+      <div class="component-body" v-show="!collapseState.guideBuild">
+        <table class="info-table" style="margin-bottom:1rem"><colgroup><col style="width:17%"/><col style="width:83%"/></colgroup><tbody>
+          <tr><td class="label-cell"><strong>加点推荐</strong></td><td class="value-cell"><strong>固有技能&gt;共鸣解放&gt;共鸣回路&gt;大攻击/大暴击&gt;共鸣技能&gt;常态攻击＞变奏技能</strong></td></tr>
+        </tbody></table>
+        <table class="info-table" style="margin-bottom:1rem"><colgroup><col style="width:17%"/><col style="width:83%"/></colgroup><tbody>
+          <tr><td class="label-cell"><strong>突破材料</strong></td><td class="value-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/b06d865346bf4719a0ee326250d13f2d20260131.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/9f2c38abd5c04c1790cd8588e1fa1a1820260131.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/993db1162ac240ed8b40a56dbd3f6c5420260131.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/e81eaddc002c4dcbaf09ed401d13989f20260131.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/2d9fcb08ce57487592338eb8e1a6dcb320260131.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/81e294cf63f44fceb89377bced6be88920260427.png" width="92" alt="" /></td></tr>
+          <tr><td class="label-cell"><strong>技能材料</strong></td><td class="value-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/f7923b4fc9fc43d990265cd71c38652820260131.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/bef1ceb574d64e20986318493434c51020260131.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/094d1d12dab247fe970eb1576414012120260131.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/ba482d06f289446ca1decdfb1dae3eae20260131.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/ed7176125f834e13beda6272f1abf01720260427.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/9b4f00d040064f8a98af812c0d3d62fa20260427.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/21e5a6fecf6345b8b37d9da5e76ebe3e20260427.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/60543603a07647d7964b0eb4ecaa984120260427.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/f3793f2c990f403cb1d1e8f9ba9cd7ca20260427.png" width="92" alt="" /></td></tr>
+          <tr><td class="label-cell"><strong>专武材料</strong></td><td class="value-cell"><img src="https://prod-alicdn-community.kurobbs.com/forum/ab37cca63e054b889113a05dc846395c20260427.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/b0855a99440140d08cfeead1965a9bf920260427.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/20c432e4039c4d35825366c1e0c141b020260427.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/d983d96465a44577b81a8749d615529420260427.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/2c6abdfaf93c4a2b8349a92eb40557f920260427.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/e549f8c10e14449580bac8027a3b3cf420260427.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/c098188b5d3c4b9abfa2ede648c232f820260427.png" width="92" alt="" /> <img src="https://prod-alicdn-community.kurobbs.com/forum/40e70b72985d4330ab137947c26de87120260427.png" width="92" alt="" /></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- 角色机制 -->
+    <div id="guide-mechanics" class="info-component">
+      <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('guideMechanics')">
+        <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
+        <div class="component-header-content">
+          <span class="component-title-text">角色机制</span>
+          <button class="collapse-btn"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/></svg></button>
+        </div>
+      </div>
+      <div class="component-body" v-show="!collapseState.guideMechanics">
+        <div class="stat-tabs">
+          <button class="stat-tab" :class="{ active: activeMechanicsTab === 0 }" @click="activeMechanicsTab = 0">核心机制</button>
+          <button class="stat-tab" :class="{ active: activeMechanicsTab === 1 }" @click="activeMechanicsTab = 1">输出流程</button>
+        </div>
+        <div class="component-content-text" v-show="activeMechanicsTab === 0">
+          <table class="info-table"><colgroup><col style="width:17%"/><col style="width:83%"/></colgroup><tbody>
+            <tr><td class="label-cell"><strong>核心机制</strong></td><td class="value-cell">
+              <ul style="list-style:disc;padding-left:1.5rem;margin:0">
+                <li>处于<strong class="text-gold">【布景之形】</strong>时，攻击可获得<strong class="text-gold">【虚质粒子】</strong>。</li>
+                <li>处于<strong class="text-gold">【幻灭之形】</strong>时，攻击可消耗<strong class="text-gold">【虚质粒子】</strong>转化为<strong class="text-gold">【共形能量】</strong>，为<strong class="text-gold">【帷幕终景·幻灭之形】</strong>充能。</li>
+                <li>处于<strong class="text-gold">熵变强化</strong>状态时，随时间获得<strong class="text-gold">【黯核】</strong>，可用于释放<strong class="text-gold">强化共鸣技能</strong>。</li>
+                <li>释放<strong class="text-gold">共鸣解放·布景之形</strong>，达妮娅会获得<strong class="text-gold">熵变强化·幻灭之形</strong>，提升攻击。<br/>释放<strong class="text-gold">共鸣解放·幻灭之形</strong>，达妮娅会获得<strong class="text-gold">熵变强化·布景之形</strong>，持续回复<strong class="text-gold">【虚质粒子】</strong>。</li>
+                <li>为队伍中角色提供伤害加成效果。</li>
+                <li>处于<strong class="text-gold">共鸣模态·聚爆</strong>时，拥有高频附加<strong class="text-gold">【聚爆效应】</strong>的能力，并可提升聚爆效应体系队伍的伤害。</li>
+                <li>处于<strong class="text-gold">共鸣模态·集谐</strong>时，拥有附加<strong class="text-gold">【集谐·偏移】</strong>、刷新<strong class="text-gold">【集谐·干涉】</strong>持续时间、快速积攒<strong class="text-gold">【偏谐值】</strong>的能力，并可提升集谐响应体系队伍的伤害。</li>
+              </ul>
+            </td></tr>
+          </tbody></table>
+        </div>
+        <div class="component-content-text" v-show="activeMechanicsTab === 1">
+          <table class="info-table"><colgroup><col style="width:17%"/><col style="width:83%"/></colgroup><tbody>
+            <tr><td class="label-cell"><strong>输出流程</strong></td><td class="value-cell">
+              <p><strong>基础流程：R-EE-AAAA-R-Q（满协奏切人）</strong></p>
+              <p style="color:#7e8c8d;font-size:14px">技能缩写：普攻--A，重击--Z，共鸣技能--E，共鸣解放--R，声骸--Q</p>
+            </td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 声骸套装推荐 -->
+    <div id="guide-echo" class="info-component">
+      <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('guideEcho')">
+        <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
+        <div class="component-header-content">
+          <span class="component-title-text">声骸套装推荐</span>
+          <button class="collapse-btn"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/></svg></button>
+        </div>
+      </div>
+      <div class="component-body" v-show="!collapseState.guideEcho">
+        <div class="stat-tabs">
+          <button class="stat-tab" :class="{ active: activeEchoTab === 0 }" @click="activeEchoTab = 0">主流声骸</button>
+          <button class="stat-tab" :class="{ active: activeEchoTab === 1 }" @click="activeEchoTab = 1">斑驳粉饰之沫</button>
+          <button class="stat-tab" :class="{ active: activeEchoTab === 2 }" @click="activeEchoTab = 2">剪心辑梦之影</button>
+        </div>
+        <div class="component-content-text" v-show="activeEchoTab === 0">
+          <table class="info-table"><colgroup><col style="width:17%"/><col style="width:83%"/></colgroup><tbody>
+            <tr><td class="label-cell"><strong><img src="https://prod-alicdn-community.kurobbs.com/forum/abefff652e4e4c10b60479d394394f3620260423.png" width="32" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1468619762249129984" target="_blank">斑驳粉饰之沫</a></strong></td><td class="value-cell"><a href="https://wiki.kurobbs.com/mc/item/1498439403399122944" target="_blank"><img src="https://prod-alicdn-community.kurobbs.com/forum/4626acccbf5047d2a8ed7b4d048d2a5120260508.png" width="92" alt="" /></a></td></tr>
+            <tr><td class="label-cell"><strong><img src="https://prod-alicdn-community.kurobbs.com/forum/fb3b3798387b479db72bafb6e4b4d74820260423.png" width="32" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498480264495570944" target="_blank">剪心辑梦之影</a></strong></td><td class="value-cell"><a href="https://wiki.kurobbs.com/mc/item/1498470175877439488" target="_blank"><img src="https://prod-alicdn-community.kurobbs.com/forum/a30f809da70d44fa8650dc1a7b88520c20260423.png" width="92" alt="" /></a></td></tr>
+            <tr><td class="label-cell"><strong>COST分配</strong></td><td class="value-cell"><strong>毕业：43311</strong></td></tr>
+            <tr><td class="label-cell"><strong>COST主词条</strong></td><td class="value-cell"><p><strong>COST4：</strong>暴击 / 暴击伤害</p><p><strong>COST3：</strong>双热熔伤害加成 / 热熔伤害加成+攻击</p><p><strong>COST1：</strong>攻击</p></td></tr>
+            <tr><td class="label-cell"><strong>声骸词条</strong></td><td class="value-cell"><strong>暴击=暴击伤害＞攻击&gt;共鸣解放&gt; 共鸣效率（推荐效率120%以上）</strong></td></tr>
+          </tbody></table>
+        </div>
+        <div class="component-content-text" v-show="activeEchoTab === 1">
+          <table class="info-table"><colgroup><col style="width:17%"/><col style="width:83%"/></colgroup><tbody>
+            <tr><td class="label-cell"><strong><img src="https://prod-alicdn-community.kurobbs.com/forum/abefff652e4e4c10b60479d394394f3620260423.png" width="32" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1468619762249129984" target="_blank">斑驳粉饰之沫</a></strong></td><td class="value-cell"><p><strong>二件套：</strong>热熔伤害提升10%</p><p><strong>五件套：</strong>角色为敌人添加<strong style="color:#ba932d">【聚爆效应】</strong>时，自身获得下述效果：热熔伤害提升10%，持续15秒。持续期间内施放延奏技能后，下一个变奏技能登场的角色热熔伤害提升25%，持续15秒。</p></td></tr>
+            <tr><td class="label-cell"><a href="https://wiki.kurobbs.com/mc/item/1498439403399122944" target="_blank"><img src="https://prod-alicdn-community.kurobbs.com/forum/4626acccbf5047d2a8ed7b4d048d2a5120260508.png" width="92" alt="" /></a></td><td class="value-cell"><p>使用声骸技能，召唤<strong style="color:#ba932d">【骗术师】</strong>，对敌人造成<strong class="text-red">273.60%</strong>的热熔伤害。</p><p>在此后15秒内，若自身施放延奏技能，使下一个变奏技能登场的角色热熔伤害加成提升<strong class="text-red">12.00%</strong>，持续15秒。</p><p>技能冷却：20秒</p></td></tr>
+          </tbody></table>
+        </div>
+        <div class="component-content-text" v-show="activeEchoTab === 2">
+          <table class="info-table"><colgroup><col style="width:17%"/><col style="width:83%"/></colgroup><tbody>
+            <tr><td class="label-cell"><strong><img src="https://prod-alicdn-community.kurobbs.com/forum/fb3b3798387b479db72bafb6e4b4d74820260423.png" width="32" alt="" /><br/><a href="https://wiki.kurobbs.com/mc/item/1498480264495570944" target="_blank">剪心辑梦之影</a></strong></td><td class="value-cell"><p><strong>二件套：</strong>攻击力提升10%</p><p><strong>五件套：</strong>角色为敌人添加<strong style="color:#ba932d">【震谐·偏移】</strong>或<strong style="color:#ba932d">【集谐·偏移】</strong>时，队伍中角色谐度破坏增幅提升20点，持续30秒，同名效果之间不可叠加。</p></td></tr>
+            <tr><td class="label-cell"><a href="https://wiki.kurobbs.com/mc/item/1498470175877439488" target="_blank"><img src="https://prod-alicdn-community.kurobbs.com/forum/a30f809da70d44fa8650dc1a7b88520c20260423.png" width="92" alt="" /></a></td><td class="value-cell"><p>对周围敌人造成<strong style="color:#f3c40f">405.00%</strong>的衍射伤害。</p><p>长按声骸技能，持续攻击敌人造成至多十二段<strong style="color:#f3c40f">49.33%</strong>的衍射伤害。使用该声骸技能后15秒内，若自身施放延奏技能，使下一个变奏技能登场的角色攻击提升<strong style="color:#ba932d">12.00%</strong>，持续15秒。</p><p>技能冷却：25秒</p></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 武器推荐 -->
+    <div id="guide-weapon" class="info-component">
+      <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('guideWeapon')">
+        <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
+        <div class="component-header-content">
+          <span class="component-title-text">武器推荐</span>
+          <button class="collapse-btn"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/></svg></button>
+        </div>
+      </div>
+      <div class="component-body" v-show="!collapseState.guideWeapon">
+        <table class="info-table"><colgroup><col style="width:17%"/><col style="width:83%"/></colgroup><tbody>
+          <tr><td class="label-cell"><strong>武器推荐</strong></td><td class="value-cell">
+            <p><a href="https://wiki.kurobbs.com/mc/item/1506107908334694400" target="_blank"><img src="https://prod-alicdn-community.kurobbs.com/forum/2b7aa757a3884f2cb1a6fc55657dd50620260422.png" width="92" alt="" /></a> <a href="https://wiki.kurobbs.com/mc/item/1237354288028385280" target="_blank"><img src="https://prod-alicdn-community.kurobbs.com/forum/41923b21369d4ac79dec84473ccf2d4f20250105.png" width="92" alt="" /></a> <a href="https://wiki.kurobbs.com/mc/item/1237352221406724096" target="_blank"><img src="https://prod-alicdn-community.kurobbs.com/forum/a16aeafc88c0412eb2bd8b89bcb857c120250105.png" width="92" alt="" /></a></p>
+            <p><a href="https://wiki.kurobbs.com/mc/item/1506107908334694400" target="_blank">赝作的矮星</a>&gt;<a href="https://wiki.kurobbs.com/mc/item/1237354288028385280" target="_blank">掣傀之手</a>&gt;<a href="https://wiki.kurobbs.com/mc/item/1237352221406724096" target="_blank">漪澜浮录</a></p>
+            <p style="color:#7e8c8d;font-size:14px">无特别说明，武器默认1阶</p>
+          </td></tr>
+          <tr><td class="label-cell"><a href="https://wiki.kurobbs.com/mc/item/1506107908334694400" target="_blank"><img src="https://prod-alicdn-community.kurobbs.com/forum/2b7aa757a3884f2cb1a6fc55657dd50620260422.png" width="92" alt="" /></a></td><td class="value-cell">
+            <p><a href="https://wiki.kurobbs.com/mc/item/1506107908334694400" target="_blank"><strong style="color:#843fa1;font-size:18px">寂静</strong></a></p>
+            <p>谐振(<strong style="color:#bea466">1/2/3/4/5</strong>)阶</p>
+            <p>攻击力提升(<strong style="color:#bea466">12%/15%/18%/21%/24%</strong>)。附加聚爆效应或集谐·偏移时，共鸣解放伤害加成提升(<strong style="color:#ba932d">36%/45%/54%/63%/72%</strong>)，持续5秒。该效果生效期间，队伍中的角色附加聚爆效应或集谐·偏移时，该角色攻击提升(<strong style="color:#ba932d">24%/30%/36%/42%/48%</strong>)，持续15秒，<strong>同名效果之间不可叠加</strong>。</p>
+          </td></tr>
+          <tr><td class="label-cell"><a href="https://wiki.kurobbs.com/mc/item/1237354288028385280" target="_blank"><img src="https://prod-alicdn-community.kurobbs.com/forum/41923b21369d4ac79dec84473ccf2d4f20250105.png" width="92" alt="" /></a></td><td class="value-cell">
+            <p><a href="https://wiki.kurobbs.com/mc/item/1237354288028385280" target="_blank"><strong style="color:#ac2e38;font-size:18px">密电增幅</strong></a></p>
+            <p>谐振(<strong style="color:#bea466">1/2/3/4/5</strong>)阶</p>
+            <p>全属性伤害加成提升(<strong style="color:#bea466">12%/15%/18%/21%/24%</strong>)。造成共鸣技能伤害时，自身攻击提升(<strong style="color:#ba932d">12%/15%/18%/21%/24%</strong>)，可叠加2层，效果持续5秒。自身不在场时，该效果攻击额外提升(<strong style="color:#bea466">12%/15%/18%/21%/24%</strong>)</p>
+          </td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- 编队&队伍轴推荐 -->
+    <div id="guide-team" class="info-component">
+      <div class="component-header" :style="{ background: '#EFEDEA' }" @click="toggleCollapse('guideTeam')">
+        <div class="component-header-bg" :style="{ backgroundImage: `url(https://prod-alicdn-community.kurobbs.com/forum/wikimcbg.png)` }"></div>
+        <div class="component-header-content">
+          <span class="component-title-text">编队&amp;队伍轴推荐</span>
+          <button class="collapse-btn"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.99932 5.82861H7.1709L9.99932 8.65704L12.8278 5.82861H9.99932ZM19.9706 5.99995H15.6525L9.96501 11.6875L4.27749 5.99995H0.0293579L7.84094 13.8115L7.84089 13.8116L9.99993 15.9706L19.9706 5.99995Z" fill="#BB9F5E"/></svg></button>
+        </div>
+      </div>
+      <div class="component-body" v-show="!collapseState.guideTeam">
+        <div class="stat-tabs">
+          <button class="stat-tab" :class="{ active: activeTeamTab === 0 }" @click="activeTeamTab = 0">主流队友</button>
+          <button class="stat-tab" :class="{ active: activeTeamTab === 1 }" @click="activeTeamTab = 1">爱弥斯+千咲</button>
+          <button class="stat-tab" :class="{ active: activeTeamTab === 2 }" @click="activeTeamTab = 2">爱弥斯+千咲（二链）</button>
+          <button class="stat-tab" :class="{ active: activeTeamTab === 3 }" @click="activeTeamTab = 3">陆·赫斯+千咲</button>
+        </div>
+        <div class="component-content-text" v-show="activeTeamTab === 0">
+          <table class="info-table"><colgroup><col style="width:17%"/><col style="width:83%"/></colgroup><tbody>
+            <tr><td class="label-cell"><strong>角色图鉴</strong></td><td class="value-cell"><strong><a href="https://wiki.kurobbs.com/mc/item/1488852222116831232?wkFrom=catalog" target="_blank" style="color:#e67e23;font-size:18px;text-decoration:underline">&gt;&gt;点击查看【达妮娅角色图鉴】</a></strong></td></tr>
+            <tr><td class="label-cell"><strong>队伍组成</strong></td><td class="value-cell"><strong><a href="https://wiki.kurobbs.com/mc/item/1457744312692867072?wkFrom=catalog" target="_blank">爱弥斯</a>+<a href="https://wiki.kurobbs.com/mc/item/1488852222116831232?wkFrom=catalog" target="_blank">达妮娅</a>+<a href="https://wiki.kurobbs.com/mc/item/1429457793942482944?wkFrom=catalog" target="_blank">千咲</a></strong><br/>----------------------------<br/><strong><a href="https://wiki.kurobbs.com/mc/item/1457750329618771968?wkFrom=catalog" target="_blank">陆·赫斯</a>+<a href="https://wiki.kurobbs.com/mc/item/1488852222116831232?wkFrom=catalog" target="_blank">达妮娅</a>+<a href="https://wiki.kurobbs.com/mc/item/1429457793942482944?wkFrom=catalog" target="_blank">千咲</a></strong></td></tr>
+          </tbody></table>
+        </div>
+        <div class="component-content-text" v-show="activeTeamTab === 1">
+          <table class="info-table"><colgroup><col style="width:17%"/><col style="width:83%"/></colgroup><tbody>
+            <tr><td class="label-cell"><strong>队伍组成</strong></td><td class="value-cell"><strong>爱弥斯+达妮娅+千咲</strong></td></tr>
+            <tr><td class="label-cell"><strong>输出轴</strong></td><td class="value-cell"><p><strong>爱弥斯</strong>→R-E-E-Q（满协奏切人）</p><p><strong>千咲</strong>→变奏入场→E（满协奏切人）</p><p><strong>达妮娅</strong>→变奏入场→R-E-E-AAAA-R-Q（满协奏切人）</p></td></tr>
+            <tr><td class="label-cell"><strong>核心</strong></td><td class="value-cell">角色通过<strong style="color:#ca9f5e">共鸣解放</strong>在短时间内对目标造成大量<strong class="text-red">热熔伤害</strong>。</td></tr>
+          </tbody></table>
+        </div>
+        <div class="component-content-text" v-show="activeTeamTab === 2">
+          <table class="info-table"><colgroup><col style="width:17%"/><col style="width:83%"/></colgroup><tbody>
+            <tr><td class="label-cell"><strong>队伍组成</strong></td><td class="value-cell"><strong>爱弥斯（二链）+达妮娅+千咲</strong></td></tr>
+            <tr><td class="label-cell"><strong>输出轴</strong></td><td class="value-cell"><p>爱弥斯二链解锁后，达妮娅登场前可多积累一层增伤。</p></td></tr>
+          </tbody></table>
+        </div>
+        <div class="component-content-text" v-show="activeTeamTab === 3">
+          <table class="info-table"><colgroup><col style="width:17%"/><col style="width:83%"/></colgroup><tbody>
+            <tr><td class="label-cell"><strong>队伍组成</strong></td><td class="value-cell"><strong>陆·赫斯+达妮娅+千咲</strong></td></tr>
+            <tr><td class="label-cell"><strong>输出轴</strong></td><td class="value-cell"><p><strong>陆·赫斯</strong>→R-E-Q（满协奏切人）</p><p><strong>千咲</strong>→变奏入场→E（满协奏切人）</p><p><strong>达妮娅</strong>→变奏入场→R-E-E-AAAA-R-Q（满协奏切人）</p></td></tr>
+            <tr><td class="label-cell"><strong>核心</strong></td><td class="value-cell">陆·赫斯提供聚爆效应增幅，配合达妮娅的热熔输出。</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
   </div>
   </div>
 </template>
@@ -1370,6 +1586,9 @@ const activePreciousTab = ref(0)
 const preciousItemTabs = ['「骗术师」', '星炬纪念相册', '「造梦者」', '特殊料理']
 const activeStoryTab = ref(4)
 const storyTabs = ['礼物', '荒芜', '明昼', '群魔', '谎言']
+const activeMechanicsTab = ref(0)
+const activeEchoTab = ref(0)
+const activeTeamTab = ref(0)
 
 const roleBg = ref('https://prod-alicdn-community.kurobbs.com/forum/cbe1a0d853d14e5aaac4c84c7d28e74d20260401.png?x-oss-process=image/format,webp')
 const attrIcon = ref('https://prod-alicdn-community.kurobbs.com/forum/a8a304ec837d4c22bc13cc7aa3c7f72420260401.png')
@@ -1462,7 +1681,13 @@ const collapseState = reactive({
   skillMaterial: false,
   abilityReport: false,
   preciousItems: false,
-  characterStory: false
+  characterStory: false,
+  guideBattleStyle: false,
+  guideBuild: false,
+  guideMechanics: false,
+  guideEcho: false,
+  guideWeapon: false,
+  guideTeam: false
 })
 
 const toggleCollapse = (key: keyof typeof collapseState) => {
@@ -1611,6 +1836,14 @@ const toggleNavGroup = (group: string) => {
   margin: 0 0 2rem 0;
   letter-spacing: 0.2rem;
   text-shadow: 0 0 20px rgba(var(--c-pink), 0.6);
+}
+
+.guide-notice {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+  margin: -1rem 0 2rem 0;
+  letter-spacing: 0.05rem;
 }
 
 /* 角色展示组件 */
