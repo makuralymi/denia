@@ -14,6 +14,9 @@
         </transition>
       </router-view>
       
+      <!-- 开屏动画 -->
+      <SplashScreen />
+
       <!-- 全局迷你音乐播放器 -->
       <MiniPlayer />
     </main>
@@ -23,6 +26,7 @@
 <script setup lang="ts">
 import { useCanvas } from './composables/useCanvas';
 import MiniPlayer from './components/shared/MiniPlayer.vue';
+import SplashScreen from './components/shared/SplashScreen.vue';
 
 // 唤醒并挂载我们的 WebGL 引擎
 useCanvas();
