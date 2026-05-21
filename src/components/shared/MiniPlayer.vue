@@ -90,6 +90,9 @@ interface Song {
 
 const playlist = ref<Song[]>([
   { name: '枯音染秽无凭裂章', url: '/audio/audio.mp3' },
+  { name: '坠入虚无 (Decensus Ad Nihilum) - 鸣潮先约电台、Crywolf、kahoca', url: '/audio/audio2.mp3' },
+  { name: '直到下次再见 (Dasvidaniya) - 鸣潮先约电台、Crywolf、Cxssidy', url: '/audio/audio3.mp3' },
+
   // 预留位置，后续添加音频直接写在这里：
   // { name: 'SECOND ROUND', url: '/audio/audio1.mp3' },
   // { name: 'MAIN MENU', url: '/audio/audio2.mp3' }

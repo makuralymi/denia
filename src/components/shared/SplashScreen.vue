@@ -26,12 +26,19 @@
         }"
       />
     </div>
+
+    <!-- Doll 动画层 — 文字消失后出现 -->
+    <img :src="dollW" class="doll doll-w" />
+    <img :src="dollB" class="doll doll-b" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import bubbleSrc from '@/canvas/effects/bubble.png';
+import dollW from '@/canvas/effects/doll_w.png';
+import dollB from '@/canvas/effects/doll_b.png';
 
 const visible = ref(true);
 
@@ -51,6 +58,8 @@ const bubbles = ref<Bubble[]>([]);
 function rand(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
+
+const router = useRouter();
 
 onMounted(() => {
   const count = 80;
@@ -72,6 +81,7 @@ onMounted(() => {
 
   setTimeout(() => {
     visible.value = false;
+    router.push('/');
   }, 4500);
 });
 </script>
@@ -173,6 +183,158 @@ onMounted(() => {
   100% {
     bottom: 105%;
     transform: scale(0.5) translateX(var(--drift, 0px));
+    opacity: 0;
+  }
+}
+
+/* Doll 层 */
+.doll {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 160px;
+  height: auto;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.doll-w {
+  animation: dollWAnim 2.5s ease-in 2s forwards;
+}
+
+.doll-b {
+  animation: dollBAnim 2.5s ease-in 2s forwards;
+}
+
+@keyframes dollWAnim {
+  0% {
+    translate: calc(-50vw + 60px) -50%;
+    scale: 1;
+    rotate: 0deg;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  30% {
+    translate: calc(-50% - 70px) -50%;
+    scale: 1;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  38% {
+    translate: calc(-50% - 70px) -82%;
+    scale: 1.06 0.94;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  46% {
+    translate: calc(-50% - 70px) -46%;
+    scale: 0.94 1.06;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  54% {
+    translate: calc(-50% - 70px) -92%;
+    scale: 1.08 0.92;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  62% {
+    translate: calc(-50% - 70px) -46%;
+    scale: 0.92 1.08;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  70% {
+    translate: calc(-50% - 70px) 8vh;
+    scale: 0.9;
+    rotate: 20deg;
+    opacity: 0.9;
+  }
+  80% {
+    translate: calc(-50% - 70px) 35vh;
+    scale: 0.75;
+    rotate: 80deg;
+    opacity: 0.6;
+  }
+  92% {
+    translate: calc(-50% - 70px) 80vh;
+    scale: 0.55;
+    rotate: 145deg;
+    opacity: 0.25;
+  }
+  100% {
+    translate: calc(-50% - 70px) 120vh;
+    scale: 0.4;
+    rotate: 180deg;
+    opacity: 0;
+  }
+}
+
+@keyframes dollBAnim {
+  0% {
+    translate: calc(50vw - 60px) -50%;
+    scale: 1;
+    rotate: 0deg;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  30% {
+    translate: calc(-50% + 70px) -50%;
+    scale: 1;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  38% {
+    translate: calc(-50% + 70px) -82%;
+    scale: 1.06 0.94;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  46% {
+    translate: calc(-50% + 70px) -46%;
+    scale: 0.94 1.06;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  54% {
+    translate: calc(-50% + 70px) -92%;
+    scale: 1.08 0.92;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  62% {
+    translate: calc(-50% + 70px) -46%;
+    scale: 0.92 1.08;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  70% {
+    translate: calc(-50% + 70px) 8vh;
+    scale: 0.9;
+    rotate: -20deg;
+    opacity: 0.9;
+  }
+  80% {
+    translate: calc(-50% + 70px) 35vh;
+    scale: 0.75;
+    rotate: -80deg;
+    opacity: 0.6;
+  }
+  92% {
+    translate: calc(-50% + 70px) 80vh;
+    scale: 0.55;
+    rotate: -145deg;
+    opacity: 0.25;
+  }
+  100% {
+    translate: calc(-50% + 70px) 120vh;
+    scale: 0.4;
+    rotate: -180deg;
     opacity: 0;
   }
 }

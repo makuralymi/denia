@@ -1,5 +1,5 @@
 <template>
-  <div class="wiki-view">
+  <div class="wiki-view" @click="onImageClick">
     <!-- 右侧导航 -->
     <div class="side-nav" :class="{ collapsed: isNavCollapsed }">
       <button class="toggle-btn" @click="toggleNav" :title="isNavCollapsed ? '展开导航' : '收起导航'">
@@ -1568,6 +1568,13 @@
     </div>
   </div>
   </div>
+
+  <!-- 全屏图片展示 -->
+  <Teleport to="body">
+    <div v-if="fullscreenImage" class="fullscreen-overlay" @click="closeFullscreen">
+      <img :src="fullscreenImage" alt="" />
+    </div>
+  </Teleport>
   </div>
 </template>
 
@@ -1712,6 +1719,20 @@ const navExpanded = ref('')
 const toggleNavGroup = (group: string) => {
   navExpanded.value = navExpanded.value === group ? '' : group
 }
+
+const fullscreenImage = ref<string | null>(null)
+
+const onImageClick = (e: MouseEvent) => {
+  const target = e.target as HTMLElement
+  if (target.tagName === 'IMG' && target.getAttribute('src')) {
+    e.stopPropagation()
+    fullscreenImage.value = target.getAttribute('src')
+  }
+}
+
+const closeFullscreen = () => {
+  fullscreenImage.value = null
+}
 </script>
 
 <style scoped>
@@ -1763,8 +1784,8 @@ const toggleNavGroup = (group: string) => {
 }
 
 .wiki-subtitle {
-  font-size: clamp(0.85rem, 1.4vw, 1.1rem);
-  color: rgba(255, 255, 255, 0.6);
+  font-size: clamp(1.85rem, 2.4vw, 1.1rem);
+  color: rgba(241, 213, 224, 0.842);
   letter-spacing: 0.08rem;
   margin-top: 1rem;
   text-shadow: 0 0 10px rgba(var(--c-pink), 0.2);
@@ -2467,6 +2488,28 @@ const toggleNavGroup = (group: string) => {
   padding: 8px 0;
   font-size: 14px;
   letter-spacing: 0;
+}
+
+/* 全屏图片 */
+.fullscreen-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.fullscreen-overlay img {
+  max-width: 92vw;
+  max-height: 92vh;
+  object-fit: contain;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
 }
 
 /* 响应式 */
