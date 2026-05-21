@@ -78,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useAudioStore } from '@/stores/audioStore';
 import dollW from '@/canvas/effects/doll_w.png';
 import dollB from '@/canvas/effects/doll_b.png';
@@ -130,9 +130,14 @@ const loadPlaylist = () => {
   }
   audioStore.playlist = playlist.value;
   audioStore.currentSongIndex = currentSongIndex.value;
-  // 自动播放
-  audio.play().catch(() => { /* 浏览器阻止自动播放时静默失败 */ });
 };
+
+// 监听用户首次交互触发播放
+watch(() => audioStore.playTrigger, () => {
+  if (audio.src && audio.paused) {
+    audio.play().catch(() => {});
+  }
+});
 
 const playSong = (index: number) => {
   currentSongIndex.value = index;

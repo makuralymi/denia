@@ -7,15 +7,21 @@
       <p class="subtitle">System Initialization Complete</p>
       
       <div class="nav-links">
-        <router-link to="/home" class="nav-btn">ENTER SYSTEM<br>进入站点</router-link>
-        <a href="https://ams.makuraly.xyz" target="_blank" class="nav-btn ext-btn">前往飞行雪绒<br>Fleet Snowfluff</a>
+        <router-link to="/home" class="nav-btn" @click="onNavClick">ENTER SYSTEM<br>进入站点</router-link>
+        <a href="https://ams.makuraly.xyz" target="_blank" class="nav-btn ext-btn" @click="onNavClick">前往飞行雪绒<br>Fleet Snowfluff</a>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// 欢迎页面逻辑
+import { useAudioStore } from '@/stores/audioStore';
+
+const audioStore = useAudioStore();
+
+function onNavClick() {
+  audioStore.requestPlay();
+}
 </script>
 
 <style scoped>

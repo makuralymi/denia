@@ -11,6 +11,7 @@ export const useAudioStore = defineStore('audio', () => {
   const duration = ref(0);
   const isPlaying = ref(false);
   const currentSongIndex = ref(2);
+  const playTrigger = ref(0);
   const playlist = ref<Song[]>([
     { name: '枯音染秽无凭裂章', url: '/audio/audio.mp3' },
     { name: '坠入虚无 (Decensus Ad Nihilum) - 鸣潮先约电台、Crywolf、kahoca', url: '/audio/audio2.mp3' },
@@ -26,13 +27,19 @@ export const useAudioStore = defineStore('audio', () => {
     return song.url.replace(/\.mp3$/i, '.lrc');
   });
 
+  function requestPlay() {
+    playTrigger.value++;
+  }
+
   return {
     currentTime,
     duration,
     isPlaying,
     currentSongIndex,
+    playTrigger,
     playlist,
     currentSong,
     currentLrcUrl,
+    requestPlay,
   };
 });
