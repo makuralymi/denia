@@ -2,7 +2,7 @@
   <div class="welcome-container">
     <!-- 玻璃态拟物卡片结构 (Glassmorphism) -->
     <div class="glass-panel">
-      <h1 class="title">DENIA</h1>
+      <h1 class="title">生日快乐DENIA</h1>
       <div class="divider">⚠️正在制作娅娅对话语音AI,敬请期待！</div>
       <p class="subtitle">System Initialization Complete</p>
       
