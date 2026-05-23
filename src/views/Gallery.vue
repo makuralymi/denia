@@ -590,7 +590,7 @@ fetchImages()
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.75rem;
   letter-spacing: 0.06rem;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.048);
   padding: 8px 20px;
   border-radius: 20px;
   backdrop-filter: blur(8px);

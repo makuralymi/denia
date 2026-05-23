@@ -129,7 +129,7 @@
 }
 
 .nav-item:hover, .nav-item.active {
-  color: #fff;
+  color: #ffdaed;
 }
 
 .nav-item:hover::after, .nav-item.active::after {
