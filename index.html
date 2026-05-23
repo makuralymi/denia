@@ -3,31 +3,85 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- 基础 SEO -->
-    <title>达妮娅-Denia</title>
-    <meta name="description" content="明朝达妮娅同人站点" />
-    <meta name="keywords" content="达妮娅, Denia, 明朝, 同人, 游戏同人站点, ACG, 沉浸式互动" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+    <meta name="theme-color" content="#0f0c12" />
+
+    <!-- ===== Primary (zh-CN) ===== -->
+    <title>达妮娅 - Denia | 鸣潮同人站点</title>
+    <meta name="description" content="鸣潮达妮娅同人站点 — 探索达妮娅的角色档案、精美图集、Wiki百科与AI互动体验。沉浸式ACG同人空间。" />
+    <meta name="keywords" content="达妮娅, Denia, 鸣潮, 同人, 游戏同人站点, ACG, 沉浸式互动, 角色档案, 图集, Wiki" />
     <meta name="author" content="Lumi" />
-    
-    <!-- Open Graph / 社交平台分享优化 -->
-    <meta property="og:title" content="达妮娅-Denia" />
-    <meta property="og:description" content="明朝达妮娅同人站点" />
+    <link rel="canonical" href="https://denia.makuraly.xyz" />
+
+    <!-- ===== Open Graph ===== -->
+    <meta property="og:title" content="达妮娅 - Denia | 鸣潮同人站点" />
+    <meta property="og:description" content="鸣潮达妮娅同人站点 — 探索角色档案、精美图集、Wiki百科与AI互动体验" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="达妮娅-Denia" />
-    
-    <!-- Twitter Card -->
+    <meta property="og:url" content="https://denia.makuraly.xyz" />
+    <meta property="og:site_name" content="达妮娅 - Denia" />
+    <meta property="og:image" content="https://denia.makuraly.xyz/image/denia.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="达妮娅 - Denia" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:locale:alternate" content="ja_JP" />
+    <meta property="og:locale:alternate" content="ko_KR" />
+
+    <!-- ===== Twitter Card ===== -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="达妮娅-Denia" />
-    <meta name="twitter:description" content="明朝达妮娅同人站点" />
+    <meta name="twitter:title" content="达妮娅 - Denia | 鸣潮同人站点" />
+    <meta name="twitter:description" content="鸣潮达妮娅同人站点 — 探索角色档案、精美图集、Wiki百科与AI互动体验" />
+    <meta name="twitter:image" content="https://denia.makuraly.xyz/image/denia.png" />
+    <meta name="twitter:image:alt" content="达妮娅 - Denia" />
 
-    <!-- 网站 Icon -->
+    <!-- ===== hreflang ===== -->
+    <link rel="alternate" hreflang="zh-CN" href="https://denia.makuraly.xyz" />
+    <link rel="alternate" hreflang="en" href="https://denia.makuraly.xyz/en" />
+    <link rel="alternate" hreflang="ja" href="https://denia.makuraly.xyz/ja" />
+    <link rel="alternate" hreflang="ko" href="https://denia.makuraly.xyz/ko" />
+    <link rel="alternate" hreflang="x-default" href="https://denia.makuraly.xyz" />
+
+    <!-- ===== JSON-LD Structured Data ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "达妮娅 - Denia",
+      "alternateName": "Denia",
+      "url": "https://denia.makuraly.xyz",
+      "description": "鸣潮达妮娅同人站点 — 探索达妮娅的角色档案、精美图集、Wiki百科与AI互动体验",
+      "inLanguage": ["zh-CN", "en", "ja", "ko"],
+      "author": { "@type": "Person", "name": "Lumi" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://denia.makuraly.xyz/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "达妮娅",
+      "alternateName": "Denia",
+      "description": "星炬学院虚质科学部学生，共鸣能力：泡影视阈",
+      "image": "https://denia.makuraly.xyz/image/denia.png",
+      "url": "https://denia.makuraly.xyz",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "星炬学院"
+      }
+    }
+    </script>
+
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="/image/icon.png" />
-
-    <!-- 引入自定义字体或者图标资源的位置 -->
+    <link rel="apple-touch-icon" href="/image/icon.png" />
   </head>
   <body>
-    <!-- Vue 挂载根节点 -->
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Welcome -->
+  <url>
+    <loc>https://denia.makuraly.xyz/</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://denia.makuraly.xyz/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://denia.makuraly.xyz/en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://denia.makuraly.xyz/ja"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://denia.makuraly.xyz/ko"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://denia.makuraly.xyz/"/>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Overview -->
+  <url>
+    <loc>https://denia.makuraly.xyz/home</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://denia.makuraly.xyz/home"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://denia.makuraly.xyz/en/home"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://denia.makuraly.xyz/ja/home"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://denia.makuraly.xyz/ko/home"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://denia.makuraly.xyz/home"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Archive -->
+  <url>
+    <loc>https://denia.makuraly.xyz/home/archive</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://denia.makuraly.xyz/home/archive"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://denia.makuraly.xyz/en/home/archive"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://denia.makuraly.xyz/ja/home/archive"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://denia.makuraly.xyz/ko/home/archive"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://denia.makuraly.xyz/home/archive"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Wiki -->
+  <url>
+    <loc>https://denia.makuraly.xyz/home/wiki</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://denia.makuraly.xyz/home/wiki"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://denia.makuraly.xyz/en/home/wiki"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://denia.makuraly.xyz/ja/home/wiki"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://denia.makuraly.xyz/ko/home/wiki"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://denia.makuraly.xyz/home/wiki"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Gallery -->
+  <url>
+    <loc>https://denia.makuraly.xyz/home/gallery</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://denia.makuraly.xyz/home/gallery"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://denia.makuraly.xyz/en/home/gallery"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://denia.makuraly.xyz/ja/home/gallery"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://denia.makuraly.xyz/ko/home/gallery"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://denia.makuraly.xyz/home/gallery"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- AI Chat -->
+  <url>
+    <loc>https://denia.makuraly.xyz/home/ai</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://denia.makuraly.xyz/home/ai"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://denia.makuraly.xyz/en/home/ai"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://denia.makuraly.xyz/ja/home/ai"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://denia.makuraly.xyz/ko/home/ai"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://denia.makuraly.xyz/home/ai"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>

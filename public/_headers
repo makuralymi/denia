@@ -1,0 +1,16 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+/image/*
+  Cache-Control: public, max-age=604800, immutable
+
+/font/*
+  Cache-Control: public, max-age=604800, immutable
+
+/audio/*
+  Cache-Control: public, max-age=604800, immutable
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

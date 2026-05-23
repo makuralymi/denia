@@ -25,11 +25,15 @@
 
 <script setup lang="ts">
 import { useCanvas } from './composables/useCanvas';
+import { useSeo } from './composables/useSeo';
 import MiniPlayer from './components/shared/MiniPlayer.vue';
 import SplashScreen from './components/shared/SplashScreen.vue';
 
 // 唤醒并挂载我们的 WebGL 引擎
 useCanvas();
+
+// 启用动态 SEO
+useSeo();
 </script>
 
 <style>
