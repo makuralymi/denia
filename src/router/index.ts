@@ -27,6 +27,11 @@ const router = createRouter({
           path: 'wiki', // Wiki页路由
           name: 'wiki',
           component: () => import('@/views/wiki.vue')
+        },
+        {
+          path: 'gallery', // 图集页路由
+          name: 'gallery',
+          component: () => import('@/views/Gallery.vue')
         }
       ]
     }
