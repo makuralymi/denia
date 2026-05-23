@@ -32,6 +32,11 @@ const router = createRouter({
           path: 'gallery', // 图集页路由
           name: 'gallery',
           component: () => import('@/views/Gallery.vue')
+        },
+        {
+          path: 'ai', // AI娅娅页路由
+          name: 'ai',
+          component: () => import('@/views/AIChat.vue')
         }
       ]
     }
