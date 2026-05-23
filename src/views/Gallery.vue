@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="gallery-view"
-    ref="scrollContainer"
-  >
+  <div class="gallery-view">
     <div class="gallery-scroll-inner">
       <!-- Loading State -->
       <div v-if="loading" class="loading-state">
@@ -30,8 +27,6 @@
         <div
           v-for="(img, idx) in images"
           :key="idx"
-          :ref="(el) => setItemRef(el as Element, idx)"
-          :data-index="idx"
           class="gallery-item"
           @click="openLightbox(idx)"
         >
@@ -62,6 +57,30 @@
         </div>
       </div>
     </div>
+
+    <!-- Preload Progress Bar -->
+    <Teleport to="body">
+      <transition name="fade">
+        <div v-if="preloading" class="preload-overlay">
+          <div class="progress-container">
+            <div class="progress-track">
+              <div
+                class="progress-fill"
+                :style="{ width: preloadPercent + '%' }"
+              >
+                <div class="progress-bubble">
+                  <img :src="progressHead" alt="" />
+                </div>
+              </div>
+            </div>
+            <div class="progress-info">
+              <span class="progress-label">{{ preloadLoaded }} / {{ preloadTotal }}</span>
+              <span class="progress-pct">{{ preloadPercent }}%</span>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </Teleport>
 
     <!-- Lightbox -->
     <Teleport to="body">
@@ -104,7 +123,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, onUnmounted } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
+import bubbleImg from '@/canvas/effects/bubble.png'
+import dollBImg from '@/canvas/effects/doll_b.png'
+import dollWImg from '@/canvas/effects/doll_w.png'
+
+const progressHeads = [bubbleImg, dollBImg, dollWImg]
+const progressHead = progressHeads[Math.floor(Math.random() * progressHeads.length)]
 
 interface GalleryImage {
   name: string
@@ -134,9 +159,13 @@ const lbImgStyle = computed(() => ({
   cursor: zoom.value > 1 ? (isDragging.value ? 'grabbing' : 'grab') : 'default',
   transition: isDragging.value ? 'none' : 'transform 0.15s ease-out'
 }))
-const scrollContainer = ref<HTMLElement | null>(null)
-
-let observer: IntersectionObserver | null = null
+const preloadTotal = ref(0)
+const preloadLoaded = ref(0)
+const preloading = ref(false)
+const preloadPercent = computed(() => {
+  if (preloadTotal.value === 0) return 0
+  return Math.round((preloadLoaded.value / preloadTotal.value) * 100)
+})
 
 const currentImage = computed(() => {
   if (lightboxIndex.value === null) return null
@@ -160,11 +189,12 @@ async function fetchImages() {
       resolution: item.resolution,
       url: `https://r2-jk.makuraly.xyz/denia/${encodeURIComponent(item.name)}`,
       aspectRatio: parseAspectRatio(item.resolution),
-      shouldLoad: false,
+      shouldLoad: true,
       loaded: false
     }))
-    await nextTick()
-    setupObserver()
+    preloadTotal.value = images.value.length
+    preloadLoaded.value = 0
+    preloading.value = true
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : '未知错误'
     error.value = `加载图集失败 — ${msg}`
@@ -173,52 +203,23 @@ async function fetchImages() {
   }
 }
 
-// ── Intersection Observer for lazy loading ──
-
-function setupObserver() {
-  if (!scrollContainer.value) return
-  observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const idx = Number((entry.target as HTMLElement).dataset.index)
-          if (!isNaN(idx) && images.value[idx] && !images.value[idx].shouldLoad) {
-            images.value[idx].shouldLoad = true
-          }
-          observer?.unobserve(entry.target)
-        }
-      })
-    },
-    {
-      root: scrollContainer.value,
-      rootMargin: '400px 0px'
-    }
-  )
-
-  // Observe all existing items
-  const items = scrollContainer.value.querySelectorAll('.gallery-item')
-  items.forEach((el) => observer?.observe(el))
-}
-
-function setItemRef(el: Element | null, _idx: number) {
-  if (el && observer) {
-    observer.observe(el)
-  }
-}
-
 function onImgLoaded(idx: number) {
+  if (images.value[idx].loaded) return
   images.value[idx].loaded = true
+  preloadLoaded.value++
 }
 
 function onImgError(idx: number) {
-  images.value[idx] = {
-    ...images.value[idx],
-    url: ''
-  }
+  if (images.value[idx].loaded) return
+  images.value[idx].loaded = true
+  images.value[idx].url = ''
+  preloadLoaded.value++
 }
 
-onUnmounted(() => {
-  observer?.disconnect()
+watch(preloadLoaded, (val) => {
+  if (val >= preloadTotal.value && preloadTotal.value > 0) {
+    preloading.value = false
+  }
 })
 
 // ── Lightbox ──
@@ -414,9 +415,9 @@ fetchImages()
   background: rgba(var(--c-pink), 0.03);
   box-shadow:
     0 0 0 1px rgba(var(--c-pink), 0.22),
-    0 0 0 5px rgba(18, 12, 16, 0.5),
+    0 0 0 5px rgba(255, 255, 255, 0.432),
     0 0 0 6px rgba(var(--c-pink), 0.12),
-    0 8px 32px rgba(0, 0, 0, 0.4);
+    0 8px 32px rgba(255, 178, 214, 0.349);
   transition: box-shadow 0.4s ease;
 }
 
@@ -644,5 +645,107 @@ fetchImages()
 @media screen and (max-width: 420px) {
   .gallery-grid { columns: 1; }
   .skeleton-grid { columns: 1; }
+}
+</style>
+
+<style>
+/* ── Preload Progress Bar ── */
+.preload-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 6, 12, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+
+.progress-container {
+  text-align: center;
+  width: min(360px, 70vw);
+}
+
+.progress-track {
+  height: 18px;
+  background: rgba(255, 182, 193, 0.12);
+  border-radius: 999px;
+  overflow: visible;
+  position: relative;
+  border: 2px solid rgba(255, 182, 193, 0.25);
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.3),
+    0 0 16px rgba(255, 182, 193, 0.12);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg,
+    rgba(255, 182, 193, 0.55),
+    rgba(255, 200, 210, 0.7),
+    rgba(255, 182, 193, 0.55)
+  );
+  background-size: 200% 100%;
+  animation: progress-shimmer 2s linear infinite;
+  position: relative;
+  transition: width 0.3s ease-out;
+  min-width: 36px;
+}
+
+@keyframes progress-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.progress-bubble {
+  position: absolute;
+  right: -16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  animation: bubble-bounce 0.6s ease-in-out infinite alternate;
+}
+
+.progress-bubble img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 6px rgba(255, 182, 193, 0.5));
+}
+
+@keyframes bubble-bounce {
+  0% { transform: translateY(-50%) scale(1); }
+  100% { transform: translateY(-60%) scale(1.1); }
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+  font-size: 0.85rem;
+  letter-spacing: 0.08rem;
+}
+
+.progress-label {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.progress-pct {
+  color: #ffb6c1;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(255, 182, 193, 0.5);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
