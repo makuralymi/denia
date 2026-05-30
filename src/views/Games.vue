@@ -201,6 +201,71 @@ const DIFFICULTIES = [
   { name: 'INSANE',  speed: 120,  multiplier: 6 },
 ]
 
+// ==================== 音效引擎 ====================
+let audioCtx: AudioContext | null = null
+
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
+  }
+}
+
+function playSound(type: 'move' | 'rotate' | 'drop' | 'clear' | 'tetris') {
+  if (!audioCtx) return
+  if (audioCtx.state === 'suspended') audioCtx.resume()
+
+  const osc = audioCtx.createOscillator()
+  const gain = audioCtx.createGain()
+  osc.connect(gain)
+  gain.connect(audioCtx.destination)
+
+  const t = audioCtx.currentTime
+
+  if (type === 'move') {
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(440, t)
+    osc.frequency.exponentialRampToValueAtTime(220, t + 0.05)
+    gain.gain.setValueAtTime(0.1, t)
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.05)
+    osc.start(t)
+    osc.stop(t + 0.05)
+  } else if (type === 'rotate') {
+    osc.type = 'square'
+    osc.frequency.setValueAtTime(330, t)
+    osc.frequency.exponentialRampToValueAtTime(660, t + 0.05)
+    gain.gain.setValueAtTime(0.05, t)
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.05)
+    osc.start(t)
+    osc.stop(t + 0.05)
+  } else if (type === 'drop') {
+    osc.type = 'triangle'
+    osc.frequency.setValueAtTime(150, t)
+    osc.frequency.exponentialRampToValueAtTime(50, t + 0.1)
+    gain.gain.setValueAtTime(0.1, t)
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1)
+    osc.start(t)
+    osc.stop(t + 0.1)
+  } else if (type === 'clear') {
+    osc.type = 'square'
+    osc.frequency.setValueAtTime(440, t)
+    osc.frequency.setValueAtTime(554.37, t + 0.1)
+    gain.gain.setValueAtTime(0.1, t)
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2)
+    osc.start(t)
+    osc.stop(t + 0.2)
+  } else if (type === 'tetris') {
+    osc.type = 'square'
+    osc.frequency.setValueAtTime(440, t)
+    osc.frequency.setValueAtTime(554.37, t + 0.1)
+    osc.frequency.setValueAtTime(659.25, t + 0.2)
+    osc.frequency.setValueAtTime(880, t + 0.3)
+    gain.gain.setValueAtTime(0.15, t)
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5)
+    osc.start(t)
+    osc.stop(t + 0.5)
+  }
+}
+
 // ==================== 排行榜 (Cloudflare D1) ====================
 interface LeaderboardEntry {
   id: string
@@ -298,6 +363,9 @@ function formatScore(s: number): string {
 // ==================== 游戏生命周期变量 ====================
 let animationId = 0
 let gameLoopRunning = false
+let isAnimatingClear = false
+let blinkingRows: number[] = []
+let blinkTick = 0
 
 // canvas / 游戏数据的引用（在 onMounted 中初始化）
 let canvas: HTMLCanvasElement
@@ -387,6 +455,17 @@ function draw() {
   drawGrid()
   drawMatrix(board, { x: 0, y: 0 })
   drawMatrix(player.matrix, player.pos)
+
+  if (typeof isAnimatingClear !== 'undefined' && isAnimatingClear && blinkTick % 2 === 1) {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)'
+    for (const y of blinkingRows) {
+      for (let x = 0; x < COLS; ++x) {
+        if (board[y][x] !== 0) {
+          ctx.fillRect(x + 0.05, y + 0.05, 0.9, 0.9)
+        }
+      }
+    }
+  }
 }
 
 function drawNext() {
@@ -432,6 +511,7 @@ function playerDrop() {
   if (collide()) {
     player.pos.y--
     merge()
+    playSound('drop')
     playerReset()
     arenaSweep()
   }
@@ -441,7 +521,11 @@ function playerDrop() {
 function playerMove(offset: number) {
   if (!player.matrix) return
   player.pos.x += offset
-  if (collide()) player.pos.x -= offset
+  if (collide()) {
+    player.pos.x -= offset
+  } else {
+    playSound('move')
+  }
 }
 
 function playerRotate(dir: number) {
@@ -458,6 +542,7 @@ function playerRotate(dir: number) {
       return
     }
   }
+  playSound('rotate')
 }
 
 function playerReset() {
@@ -477,20 +562,57 @@ function playerReset() {
 }
 
 function arenaSweep() {
-  let rowCount = 1
   const diff = DIFFICULTIES[selectedDifficulty.value]
+  const rowsToClear: number[] = []
+
   outer: for (let y = ROWS - 1; y >= 0; --y) {
     for (let x = 0; x < COLS; ++x) {
       if (board[y][x] === 0) continue outer
     }
-    const row = board.splice(y, 1)[0].fill(0)
-    board.unshift(row)
-    ++y
-    score.value += Math.floor(rowCount * 100 * diff.multiplier)
-    lines++
-    rowCount *= 2
+    rowsToClear.push(y)
   }
-  updateScore()
+
+  if (rowsToClear.length > 0) {
+    isAnimatingClear = true
+    blinkingRows = rowsToClear
+    blinkTick = 0
+
+    if (rowsToClear.length >= 4) {
+      playSound('tetris')
+    } else {
+      playSound('clear')
+    }
+
+    doBlinkAnimation(diff)
+  }
+}
+
+function doBlinkAnimation(diff: any) {
+  if (blinkTick >= 4) {
+    let rowCount = 1
+    // 从上至下消除原本被标记的行逻辑，以匹配之前的计分和行清除方式：
+    // 这里使用传统的循环直接对 board 重新检测，因为在 blink 期间 board 未变化。
+    outer: for (let y = ROWS - 1; y >= 0; --y) {
+      for (let x = 0; x < COLS; ++x) {
+        if (board[y][x] === 0) continue outer
+      }
+      const row = board.splice(y, 1)[0].fill(0)
+      board.unshift(row)
+      ++y
+      score.value += Math.floor(rowCount * 100 * diff.multiplier)
+      lines++
+      rowCount *= 2
+    }
+    updateScore()
+    
+    isAnimatingClear = false
+    blinkingRows = []
+  } else {
+    blinkTick++
+    setTimeout(() => {
+      doBlinkAnimation(diff)
+    }, 100)
+  }
 }
 
 function updateScore() {
@@ -503,9 +625,11 @@ function gameLoop(time = 0) {
   const deltaTime = time - lastTime
   lastTime = time
 
-  dropCounter += deltaTime
-  if (dropCounter > dropInterval) {
-    playerDrop()
+  if (!isAnimatingClear) {
+    dropCounter += deltaTime
+    if (dropCounter > dropInterval) {
+      playerDrop()
+    }
   }
 
   draw()
@@ -529,6 +653,8 @@ function stopGameLoop() {
 
 // ==================== 游戏控制 ====================
 function startGame() {
+  initAudio()
+  
   const diff = DIFFICULTIES[selectedDifficulty.value]
   dropInterval = diff.speed
 
@@ -818,6 +944,7 @@ function doHardDrop() {
   while (!collide()) { player.pos.y++ }
   player.pos.y--
   merge()
+  playSound('drop')
   playerReset()
   arenaSweep()
   dropCounter = 0
