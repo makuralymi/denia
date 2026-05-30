@@ -43,7 +43,7 @@
 
       <!-- 中间游戏画布 -->
       <div class="board-wrapper">
-        <canvas id="tetris" width="360" height="720"></canvas>
+        <canvas id="tetris" width="380" height="760"></canvas>
 
         <!-- 开始菜单覆盖层 -->
         <div v-if="gameState === 'menu'" class="board-overlay menu-overlay">
@@ -85,10 +85,20 @@
       <!-- 右侧 HUD：NEXT + 街机圆形按键 -->
       <div class="hud-panel right-panel">
         <div class="hud-label" style="font-size: 18px;">NEXT</div>
-        <canvas id="next-piece" width="144" height="144"></canvas>
-        <!-- 街机风格圆形操作按键 -->
+        <canvas id="next-piece" width="152" height="152"></canvas>
+        <!-- 街机风格圆形操作按键：暂停在上，三角形功能键在下 -->
         <div v-if="gameState === 'playing' || gameState === 'paused'" class="arcade-buttons">
-          <div class="arcade-btn-row">
+          <div class="arcade-btn-group pause-group">
+            <button
+              class="arcade-round-btn pause-btn"
+              @touchstart.prevent.stop="doTogglePause"
+              @mousedown.prevent.stop="doTogglePause"
+            >
+              <span class="arcade-btn-icon">{{ gameState === 'paused' ? '▶' : '⏸' }}</span>
+            </button>
+            <span class="arcade-btn-label">{{ gameState === 'paused' ? 'START' : 'PAUSE' }}</span>
+          </div>
+          <div class="arcade-triangle">
             <div class="arcade-btn-group">
               <button
                 class="arcade-round-btn rotate-btn"
@@ -99,39 +109,50 @@
               </button>
               <span class="arcade-btn-label">ROTATE</span>
             </div>
-            <div class="arcade-btn-group">
-              <button
-                class="arcade-round-btn speed-btn"
-                @touchstart.prevent.stop="doSpeedDown"
-                @mousedown.prevent.stop="doSpeedDown"
-                @touchend.prevent.stop="releaseSpeedDown"
-                @mouseup.prevent.stop="releaseSpeedDown"
-                @mouseleave.prevent.stop="releaseSpeedDown"
-              >
-                <span class="arcade-btn-icon">▼</span>
-              </button>
-              <span class="arcade-btn-label">SPEED</span>
-            </div>
-            <div class="arcade-btn-group">
-              <button
-                class="arcade-round-btn drop-btn"
-                @touchstart.prevent.stop="doHardDrop"
-                @mousedown.prevent.stop="doHardDrop"
-              >
-                <span class="arcade-btn-icon">⏬</span>
-              </button>
-              <span class="arcade-btn-label">DROP</span>
+            <div class="arcade-triangle-bottom">
+              <div class="arcade-btn-group">
+                <button
+                  class="arcade-round-btn speed-btn"
+                  @touchstart.prevent.stop="doSpeedDown"
+                  @mousedown.prevent.stop="doSpeedDown"
+                  @touchend.prevent.stop="releaseSpeedDown"
+                  @mouseup.prevent.stop="releaseSpeedDown"
+                  @mouseleave.prevent.stop="releaseSpeedDown"
+                >
+                  <span class="arcade-btn-icon">▼</span>
+                </button>
+                <span class="arcade-btn-label">SPEED</span>
+              </div>
+              <div class="arcade-btn-group">
+                <button
+                  class="arcade-round-btn drop-btn"
+                  @touchstart.prevent.stop="doHardDrop"
+                  @mousedown.prevent.stop="doHardDrop"
+                >
+                  <span class="arcade-btn-icon">⏬</span>
+                </button>
+                <span class="arcade-btn-label">DROP</span>
+              </div>
             </div>
           </div>
-          <div class="arcade-btn-group pause-group">
-            <button
-              class="arcade-round-btn pause-btn"
-              @touchstart.prevent.stop="doTogglePause"
-              @mousedown.prevent.stop="doTogglePause"
-            >
-              <span class="arcade-btn-icon">{{ gameState === 'paused' ? '▶' : '⏸' }}</span>
-            </button>
-            <span class="arcade-btn-label">{{ gameState === 'paused' ? 'START' : 'PAUSE' }}</span>
+        </div>
+      </div>
+
+      <!-- 排行榜 -->
+      <div class="hud-panel leaderboard-panel">
+        <div class="lb-header">
+          <span class="lb-title">RANKING</span>
+          <span class="lb-header-icon">★</span>
+        </div>
+        <div class="lb-list">
+          <div
+            v-for="entry in LEADERBOARD"
+            :key="entry.rank"
+            class="lb-row"
+            :class="`lb-rank-${entry.rank}`"
+          >
+            <span class="lb-rank-num">{{ entry.rank }}</span>
+            <span class="lb-rank-score">{{ formatLeaderboardScore(entry.score) }}</span>
           </div>
         </div>
       </div>
@@ -150,6 +171,24 @@ const DIFFICULTIES = [
   { name: 'EXPERT',  speed: 250,  multiplier: 4 },
   { name: 'INSANE',  speed: 120,  multiplier: 6 },
 ]
+
+// ==================== 排行榜 ====================
+interface LeaderboardEntry {
+  rank: number
+  score: number
+}
+
+const LEADERBOARD: LeaderboardEntry[] = [
+  { rank: 1, score: 934680 },
+  { rank: 2, score: 915800 },
+  { rank: 3, score: 796060 },
+  { rank: 4, score: 406420 },
+  { rank: 5, score: 322950 },
+]
+
+function formatLeaderboardScore(s: number): string {
+  return s.toString().padStart(6, '0')
+}
 
 // ==================== 游戏状态 ====================
 type GameState = 'menu' | 'playing' | 'paused' | 'gameover'
@@ -172,7 +211,7 @@ let ctx: CanvasRenderingContext2D
 let nextCanvas: HTMLCanvasElement
 let nextCtx: CanvasRenderingContext2D
 
-const BLOCK_SIZE = 36
+const BLOCK_SIZE = 38
 const COLS = 10
 const ROWS = 20
 
@@ -713,15 +752,17 @@ onUnmounted(() => {
 /* ==================== 游戏界面 UI ==================== */
 .game-container {
   display: flex;
-  gap: 40px;
+  gap: 36px;
   align-items: stretch;
-  height: 720px;
+  height: 780px;
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
   font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
   text-shadow: 1px 1px 3px rgba(255,255,255,0.4);
+  max-width: calc(100vw - 40px);
+  flex-wrap: nowrap;
 }
 
 .hud-panel {
@@ -755,11 +796,291 @@ onUnmounted(() => {
 }
 
 .right-panel {
-  width: 160px;
+  width: 170px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+}
+
+/* ==================== 排行榜面板 ==================== */
+.leaderboard-panel {
+  width: 210px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(var(--c-light-blue), 0.2);
+}
+
+.lb-title {
+  font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: rgba(var(--c-light-blue), 0.8);
+  text-shadow: 0 0 8px rgba(var(--c-light-blue), 0.4);
+}
+
+.lb-header-icon {
+  color: rgba(var(--c-pink), 0.6);
+  font-size: 0.9rem;
+  text-shadow: 0 0 6px rgba(var(--c-pink), 0.5);
+}
+
+.lb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lb-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 14px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.2s ease;
+}
+
+.lb-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.lb-rank-num {
+  font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
+  font-size: 1.3rem;
+  font-weight: 900;
+  min-width: 28px;
+  text-align: center;
+}
+
+.lb-rank-score {
+  font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* 排行榜排名配色 */
+.lb-rank-1 .lb-rank-num,
+.lb-rank-1 .lb-rank-score { color: #ffd700; text-shadow: 0 0 6px rgba(255, 215, 0, 0.4); }
+
+.lb-rank-2 .lb-rank-num,
+.lb-rank-2 .lb-rank-score { color: #e8e8e8; text-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
+
+.lb-rank-3 .lb-rank-num,
+.lb-rank-3 .lb-rank-score { color: #c0a060; text-shadow: 0 0 5px rgba(192, 160, 96, 0.3); }
+
+.lb-rank-4 .lb-rank-num,
+.lb-rank-4 .lb-rank-score { color: rgba(var(--c-light-blue), 0.8); }
+
+.lb-rank-5 .lb-rank-num,
+.lb-rank-5 .lb-rank-score { color: rgba(var(--c-pink), 0.7); }
+
+.lb-rank-1 { border-left: 2px solid #ffd700; }
+.lb-rank-2 { border-left: 2px solid #e8e8e8; }
+.lb-rank-3 { border-left: 2px solid #c0a060; }
+.lb-rank-4 { border-left: 2px solid rgba(var(--c-light-blue), 0.5); }
+.lb-rank-5 { border-left: 2px solid rgba(var(--c-pink), 0.4); }
+
+/* ==================== 响应式布局 ==================== */
+
+/* -- 1480px: 隐藏排行榜 -- */
+@media screen and (max-width: 1480px) {
+  .leaderboard-panel {
+    display: none;
+  }
+}
+
+/* -- 1100px: 缩小左右面板 -- */
+@media screen and (max-width: 1100px) {
+  .game-container {
+    gap: 20px;
+  }
+  .left-panel {
+    width: 180px;
+    gap: 20px;
+    padding: 20px 14px;
+  }
+  .right-panel {
+    width: 130px;
+    padding: 20px 14px;
+  }
+  .info-box {
+    padding: 14px 4px;
+  }
+  .hud-label {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .number-text {
+    font-size: 22px;
+    letter-spacing: 4px;
+  }
+  .hud-panel::before {
+    top: 34px;
+    width: 4px;
+    height: 50px;
+  }
+  .arcade-round-btn {
+    width: 48px;
+    height: 48px;
+  }
+  .arcade-btn-icon {
+    font-size: 1.1rem;
+  }
+  .arcade-btn-label {
+    font-size: 0.48rem;
+  }
+  .pause-btn {
+    width: 36px;
+    height: 36px;
+  }
+  .pause-btn .arcade-btn-icon {
+    font-size: 0.85rem;
+  }
+}
+
+/* -- 860px: 竖排布局，侧面板变横排 -- */
+@media screen and (max-width: 860px) {
+  .game-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    height: auto;
+    min-height: 100vh;
+    padding: 60px 10px 20px;
+    position: relative;
+    top: auto; left: auto;
+    transform: none;
+    justify-content: flex-start;
+  }
+  .board-wrapper {
+    order: 1;
+  }
+  .left-panel {
+    order: 2;
+    width: 100%;
+    max-width: 400px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .left-panel .info-box {
+    flex: 1;
+    min-width: 120px;
+  }
+  .left-panel::before {
+    display: none;
+  }
+  .right-panel {
+    order: 3;
+    width: 100%;
+    max-width: 400px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .right-panel::before {
+    display: none;
+  }
+  .right-panel .hud-label {
+    display: none;
+  }
+  .right-panel canvas {
+    margin-top: 0;
+  }
+  .arcade-buttons {
+    flex-direction: row;
+    gap: 14px;
+    margin-top: 0;
+    padding-top: 0;
+    width: auto;
+  }
+  .arcade-triangle {
+    flex-direction: row;
+    gap: 10px;
+  }
+  .arcade-triangle-bottom {
+    gap: 12px;
+  }
+  .pause-group {
+    margin-top: 0;
+  }
+  .touch-dpad {
+    width: 100%;
+  }
+}
+
+/* -- 600px: 进一步缩小 -- */
+@media screen and (max-width: 600px) {
+  .game-container {
+    gap: 8px;
+    padding: 44px 6px 12px;
+  }
+  .left-panel {
+    max-width: 100%;
+    padding: 10px 8px;
+    gap: 8px;
+  }
+  .right-panel {
+    max-width: 100%;
+    padding: 10px 8px;
+    gap: 8px;
+  }
+  .info-box {
+    padding: 10px 4px;
+  }
+  .hud-label {
+    font-size: 15px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .number-text {
+    font-size: 18px;
+    letter-spacing: 3px;
+  }
+  .arcade-round-btn {
+    width: 42px;
+    height: 42px;
+  }
+  .arcade-btn-icon {
+    font-size: 1rem;
+  }
+  .arcade-btn-label {
+    font-size: 0.42rem;
+  }
+  .pause-btn {
+    width: 30px;
+    height: 30px;
+  }
+  .pause-btn .arcade-btn-icon {
+    font-size: 0.7rem;
+  }
+}
+
+/* -- 420px: 极小屏，缩放 canvas -- */
+@media screen and (max-width: 420px) {
+  canvas#tetris {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 2;
+  }
 }
 
 .info-box {
@@ -805,7 +1126,7 @@ onUnmounted(() => {
 canvas#tetris {
   background: rgba(20, 15, 60, 0.8);
   border: 3px solid rgba(255, 255, 255, 0.4);
-  border-radius: 8px;
+  border-radius: 5%;
   box-shadow: 0 0 30px rgba(100, 50, 255, 0.3), inset 0 0 40px rgba(0, 0, 20, 0.7);
 }
 
@@ -1000,15 +1321,23 @@ canvas#next-piece {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
   width: 100%;
   margin-top: auto;
   padding-top: 12px;
 }
 
-.arcade-btn-row {
+/* 三角形功能键布局 */
+.arcade-triangle {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.arcade-triangle-bottom {
+  display: flex;
+  gap: 28px;
   justify-content: center;
 }
 

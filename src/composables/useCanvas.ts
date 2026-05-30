@@ -1,4 +1,4 @@
-import { ref, onMounted, onBeforeUnmount, ShallowRef, shallowRef } from 'vue';
+import { onMounted, onBeforeUnmount, ShallowRef, shallowRef } from 'vue';
 import { ThreeEngine } from '../canvas/core/ThreeEngine';
 
 /**
@@ -6,21 +6,19 @@ import { ThreeEngine } from '../canvas/core/ThreeEngine';
  * 确保视图与逻辑的硬隔离
  */
 export function useCanvas() {
-  // 模板 ref，用于绑定 <canvas> 元素
-  const canvasRef = ref<HTMLCanvasElement | null>(null);
-  
   // 保存引擎实例，使用 shallowRef 避免 Vue 对复杂的 Three.js 对象进行无意义的深度代理（这会导致严重的性能损耗）
   const engine: ShallowRef<ThreeEngine | null> = shallowRef(null);
 
   onMounted(() => {
-    if (!canvasRef.value) {
+    const canvas = document.querySelector<HTMLCanvasElement>('.webgl-canvas');
+    if (!canvas) {
       console.warn('并未找到 Canvas DOM 节点，ThreeEngine 初始化失败');
       return;
     }
 
     // 实例化 ThreeEngine
-    engine.value = new ThreeEngine(canvasRef.value);
-    
+    engine.value = new ThreeEngine(canvas);
+
     // 启动基于 requestAnimationFrame 的游戏循环
     engine.value.start();
   });
@@ -34,7 +32,6 @@ export function useCanvas() {
   });
 
   return {
-    canvasRef,
     engine,
   };
 }
