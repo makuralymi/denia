@@ -219,7 +219,8 @@ const leaderboard = ref<LeaderboardEntry[]>([...DEFAULT_LEADERBOARD])
 async function loadLeaderboard() {
   try {
     const res = await fetch('/api/leaderboard')
-    if (res.ok) {
+    const contentType = res.headers.get('content-type')
+    if (res.ok && contentType && contentType.includes('application/json')) {
       const data = await res.json() as LeaderboardEntry[]
       if (Array.isArray(data) && data.length > 0) {
         leaderboard.value = data
