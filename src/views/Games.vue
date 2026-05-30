@@ -77,7 +77,7 @@
         <!-- 游戏结束覆盖层 -->
         <div v-if="gameState === 'gameover'" class="board-overlay gameover-overlay" @click="backToMenu">
           <div class="overlay-title">GAME OVER</div>
-          <div class="final-score">FINAL SCORE: {{ formatScore(score) }}</div>
+          <div class="final-score">{{ formatScore(score) }}</div>
           <div class="overlay-hint">CLICK TO RETURN</div>
         </div>
       </div>
@@ -101,11 +101,24 @@
             </div>
             <div class="arcade-btn-group">
               <button
+                class="arcade-round-btn speed-btn"
+                @touchstart.prevent.stop="doSpeedDown"
+                @mousedown.prevent.stop="doSpeedDown"
+                @touchend.prevent.stop="releaseSpeedDown"
+                @mouseup.prevent.stop="releaseSpeedDown"
+                @mouseleave.prevent.stop="releaseSpeedDown"
+              >
+                <span class="arcade-btn-icon">▼</span>
+              </button>
+              <span class="arcade-btn-label">SPEED</span>
+            </div>
+            <div class="arcade-btn-group">
+              <button
                 class="arcade-round-btn drop-btn"
                 @touchstart.prevent.stop="doHardDrop"
                 @mousedown.prevent.stop="doHardDrop"
               >
-                <span class="arcade-btn-icon">▼</span>
+                <span class="arcade-btn-icon">⏬</span>
               </button>
               <span class="arcade-btn-label">DROP</span>
             </div>
@@ -515,6 +528,35 @@ function doRotate() {
   playerRotate(1)
 }
 
+// 加速下落 — 对应键盘 ↓ 键，长按持续软降
+let speedDownTimer: ReturnType<typeof setTimeout> | null = null
+let speedDownRepeat: ReturnType<typeof setInterval> | null = null
+
+function doSpeedDown() {
+  if (gameState.value !== 'playing' && gameState.value !== 'paused') return
+  if (gameState.value === 'paused') { resumeGame(); return }
+  if (!player.matrix) return
+  playerDrop()
+  // 模拟键盘长按：立即下落一格，400ms 后持续下落
+  if (speedDownTimer) clearTimeout(speedDownTimer)
+  if (speedDownRepeat) clearInterval(speedDownRepeat)
+  speedDownTimer = setTimeout(() => {
+    if (speedDownRepeat) clearInterval(speedDownRepeat)
+    speedDownRepeat = setInterval(() => {
+      if (!player.matrix || gameState.value !== 'playing') {
+        releaseSpeedDown()
+        return
+      }
+      playerDrop()
+    }, 50)
+  }, 400)
+}
+
+function releaseSpeedDown() {
+  if (speedDownTimer) { clearTimeout(speedDownTimer); speedDownTimer = null }
+  if (speedDownRepeat) { clearInterval(speedDownRepeat); speedDownRepeat = null }
+}
+
 function doHardDrop() {
   if (gameState.value !== 'playing' && gameState.value !== 'paused') return
   if (gameState.value === 'paused') { resumeGame(); return }
@@ -561,6 +603,8 @@ onUnmounted(() => {
   if (moveLeftRepeat) clearInterval(moveLeftRepeat)
   if (moveRightTimer) clearTimeout(moveRightTimer)
   if (moveRightRepeat) clearInterval(moveRightRepeat)
+  if (speedDownTimer) clearTimeout(speedDownTimer)
+  if (speedDownRepeat) clearInterval(speedDownRepeat)
 })
 </script>
 
@@ -786,7 +830,7 @@ canvas#next-piece {
 }
 
 .overlay-title {
-  font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
+  font-family: 'Courier New', monospace;
   font-size: 2.2rem;
   font-weight: 900;
   color: #fff;
@@ -796,7 +840,7 @@ canvas#next-piece {
 }
 
 .overlay-hint {
-  font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
+  font-family: 'Courier New', monospace;
   color: rgba(255, 255, 255, 0.4);
   font-size: 0.85rem;
   letter-spacing: 0.15em;
@@ -929,7 +973,7 @@ canvas#next-piece {
 }
 
 .final-score {
-  font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
+  font-family: 'Courier New', monospace;
   font-size: 1.4rem;
   color: #fff033;
   text-shadow: 0 0 8px rgba(255, 240, 51, 0.6);
@@ -1055,6 +1099,25 @@ canvas#next-piece {
     0 1px 4px rgba(0, 0, 0, 0.5),
     inset 0 3px 6px rgba(0, 0, 0, 0.4),
     0 0 24px rgba(100, 150, 255, 0.6);
+}
+
+/* SPEED — 绿色填充（对应键盘 ↓ 软降加速） */
+.speed-btn {
+  background: radial-gradient(circle at 40% 30%, rgba(140, 255, 140, 0.5) 0%, rgba(50, 200, 60, 0.7) 40%, rgba(15, 120, 20, 0.9) 100%);
+  border-color: rgba(80, 220, 90, 0.6);
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.5),
+    inset 0 2px 4px rgba(255, 255, 255, 0.15),
+    0 0 14px rgba(50, 200, 60, 0.3);
+}
+
+.speed-btn:active {
+  background: radial-gradient(circle at 40% 30%, rgba(180, 255, 180, 0.6) 0%, rgba(80, 230, 90, 0.8) 40%, rgba(20, 150, 30, 0.95) 100%);
+  border-color: rgba(100, 240, 110, 0.9);
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.5),
+    inset 0 3px 6px rgba(0, 0, 0, 0.4),
+    0 0 24px rgba(50, 200, 60, 0.6);
 }
 
 /* DROP — 红色填充 */
