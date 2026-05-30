@@ -146,22 +146,51 @@
         </div>
         <div class="lb-list">
           <div
-            v-for="entry in LEADERBOARD"
-            :key="entry.rank"
+            v-for="(entry, idx) in leaderboard"
+            :key="idx"
             class="lb-row"
-            :class="`lb-rank-${entry.rank}`"
+            :class="`lb-rank-${idx + 1}`"
           >
-            <span class="lb-rank-num">{{ entry.rank }}</span>
+            <span class="lb-rank-num">{{ idx + 1 }}</span>
+            <span class="lb-rank-id">{{ entry.id }}</span>
             <span class="lb-rank-score">{{ formatLeaderboardScore(entry.score) }}</span>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- 全屏粒子烟花 -->
+    <canvas ref="fireworksCanvas" class="fireworks-canvas"></canvas>
+
+    <!-- 新高分弹窗 -->
+    <Teleport to="body">
+      <div v-if="showHighScoreModal" class="hs-modal-backdrop" @click.self="skipHighScore">
+        <div class="hs-modal glass-panel">
+          <img :src="jumpGif" class="hs-gif" alt="celebration" />
+          <div class="hs-title">NEW HIGH SCORE!</div>
+          <div class="hs-score">{{ formatScore(score) }}</div>
+          <div class="hs-rank-info">RANK #{{ newRank }}</div>
+          <input
+            ref="hsNameInput"
+            v-model="hsPlayerName"
+            class="hs-input"
+            placeholder="ENTER YOUR ID"
+            maxlength="20"
+            @keydown.enter="submitHighScore"
+          />
+          <div class="hs-buttons">
+            <button class="hs-btn submit-btn" @click="submitHighScore">SUBMIT</button>
+            <button class="hs-btn skip-btn" @click="skipHighScore">SKIP</button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import jumpGif from '@/canvas/effects/jump__2_.gif'
 
 // ==================== 难度体系 ====================
 const DIFFICULTIES = [
@@ -172,22 +201,81 @@ const DIFFICULTIES = [
   { name: 'INSANE',  speed: 120,  multiplier: 6 },
 ]
 
-// ==================== 排行榜 ====================
+// ==================== 排行榜 (localStorage 持久化) ====================
 interface LeaderboardEntry {
-  rank: number
+  id: string
   score: number
 }
 
-const LEADERBOARD: LeaderboardEntry[] = [
-  { rank: 1, score: 934680 },
-  { rank: 2, score: 915800 },
-  { rank: 3, score: 796060 },
-  { rank: 4, score: 406420 },
-  { rank: 5, score: 322950 },
+const LS_KEY = 'lahailuo_leaderboard'
+
+const DEFAULT_LEADERBOARD: LeaderboardEntry[] = [
+  { id: '想成为人类', score: 934680 },
+  { id: '飞行雪绒', score: 915800 },
+  { id: '不捣蛋就给糖', score: 796060 },
+  { id: '我的论文被谁吃了', score: 406420 },
 ]
+
+function loadLeaderboard(): LeaderboardEntry[] {
+  try {
+    const raw = localStorage.getItem(LS_KEY)
+    if (raw) {
+      const data = JSON.parse(raw) as LeaderboardEntry[]
+      if (Array.isArray(data) && data.length > 0) return data
+    }
+  } catch {}
+  // 首次加载写回预设数据
+  saveLeaderboard(DEFAULT_LEADERBOARD)
+  return DEFAULT_LEADERBOARD
+}
+
+function saveLeaderboard(data: LeaderboardEntry[]) {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(data))
+  } catch {}
+}
+
+const leaderboard = ref<LeaderboardEntry[]>(loadLeaderboard())
 
 function formatLeaderboardScore(s: number): string {
   return s.toString().padStart(6, '0')
+}
+
+// 检查分数能否上榜，返回排名（0=不能上榜），取前6名
+function checkHighScore(sc: number): number {
+  for (let i = 0; i < leaderboard.value.length; i++) {
+    if (sc > leaderboard.value[i].score) return i + 1
+  }
+  if (leaderboard.value.length < 6) return leaderboard.value.length + 1
+  return 0
+}
+
+function insertScore(id: string, sc: number) {
+  const entry: LeaderboardEntry = { id, score: sc }
+  const list = [...leaderboard.value, entry]
+  list.sort((a, b) => b.score - a.score)
+  // 保留前6名
+  const top = list.slice(0, 6)
+  leaderboard.value = top
+  saveLeaderboard(top)
+}
+
+// ==================== 新高分弹窗 ====================
+const showHighScoreModal = ref(false)
+const hsPlayerName = ref('')
+const newRank = ref(0)
+const hsNameInput = ref<HTMLInputElement | null>(null)
+
+function skipHighScore() {
+  showHighScoreModal.value = false
+  hsPlayerName.value = ''
+}
+
+function submitHighScore() {
+  const name = hsPlayerName.value.trim() || 'ANONYMOUS'
+  insertScore(name, score.value)
+  showHighScoreModal.value = false
+  hsPlayerName.value = ''
 }
 
 // ==================== 游戏状态 ====================
@@ -374,9 +462,9 @@ function playerReset() {
   player.pos.x = Math.floor(COLS / 2) - Math.floor(player.matrix[0].length / 2)
 
   if (collide()) {
-    // 游戏结束
     stopGameLoop()
     gameState.value = 'gameover'
+    handleGameOver()
     return
   }
   drawNext()
@@ -466,6 +554,127 @@ function backToMenu() {
   stopGameLoop()
   gameState.value = 'menu'
   document.getElementById('difficulty')!.innerText = '---'
+}
+
+function handleGameOver() {
+  const finalScore = score.value
+  const rank = checkHighScore(finalScore)
+  if (rank > 0) {
+    newRank.value = rank
+    hsPlayerName.value = ''
+    showHighScoreModal.value = true
+    startFireworks()
+    setTimeout(() => {
+      hsNameInput.value?.focus()
+    }, 100)
+  }
+}
+
+// ==================== 粒子烟花系统 ====================
+const fireworksCanvas = ref<HTMLCanvasElement | null>(null)
+let fireworksActive = false
+let fireworksAnimId = 0
+
+interface Particle {
+  x: number; y: number
+  vx: number; vy: number
+  life: number
+  maxLife: number
+  color: string
+  size: number
+}
+
+let fireworksParticles: Particle[] = []
+
+function spawnBurst(cx: number, cy: number) {
+  const count = 40 + Math.floor(Math.random() * 50)
+  const colors = ['#ff0', '#f0f', '#0ff', '#f00', '#0f0', '#ff8800', '#ff0088', '#88ff00', '#fff']
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2
+    const speed = 2 + Math.random() * 6
+    const life = 800 + Math.random() * 1200
+    fireworksParticles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life,
+      maxLife: life,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: 2 + Math.random() * 3,
+    })
+  }
+}
+
+function triggerFireworkBursts() {
+  const w = window.innerWidth
+  const h = window.innerHeight
+  for (let i = 0; i < 3; i++) {
+    const cx = Math.random() * w
+    const cy = Math.random() * h * 0.6
+    setTimeout(() => spawnBurst(cx, cy), i * 200 + Math.random() * 300)
+  }
+}
+
+function drawFireworks() {
+  if (!fireworksActive) return
+  const canvas = fireworksCanvas.value
+  if (!canvas) return
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+  for (let i = fireworksParticles.length - 1; i >= 0; i--) {
+    const p = fireworksParticles[i]
+    p.life -= 16
+    if (p.life <= 0) {
+      fireworksParticles.splice(i, 1)
+      continue
+    }
+    p.x += p.vx
+    p.y += p.vy
+    p.vy += 0.03 // 重力
+
+    const alpha = p.life / p.maxLife
+    ctx.globalAlpha = alpha
+    ctx.fillStyle = p.color
+    ctx.shadowColor = p.color
+    ctx.shadowBlur = 6
+    ctx.beginPath()
+    ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2)
+    ctx.fill()
+  }
+  ctx.globalAlpha = 1
+  ctx.shadowBlur = 0
+
+  fireworksAnimId = requestAnimationFrame(drawFireworks)
+}
+
+function startFireworks() {
+  if (fireworksActive) return
+  fireworksActive = true
+  fireworksParticles = []
+
+  // 持续发射烟花 4 秒
+  let bursts = 0
+  const interval = setInterval(() => {
+    triggerFireworkBursts()
+    bursts++
+    if (bursts > 6) {
+      clearInterval(interval)
+    }
+  }, 700)
+
+  triggerFireworkBursts()
+  fireworksAnimId = requestAnimationFrame(drawFireworks)
+
+  // 动画最多持续 6 秒
+  setTimeout(() => {
+    fireworksActive = false
+  }, 6000)
 }
 
 // ==================== 键盘控制 ====================
@@ -644,6 +853,8 @@ onUnmounted(() => {
   if (moveRightRepeat) clearInterval(moveRightRepeat)
   if (speedDownTimer) clearTimeout(speedDownTimer)
   if (speedDownRepeat) clearInterval(speedDownRepeat)
+  fireworksActive = false
+  if (fireworksAnimId) cancelAnimationFrame(fireworksAnimId)
 })
 </script>
 
@@ -771,7 +982,7 @@ onUnmounted(() => {
   border-radius: 14px;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.1), inset 0 0 15px rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(5px);
-  padding: 28px 22px;
+  padding: 28px 30px;
   position: relative;
 }
 
@@ -796,7 +1007,7 @@ onUnmounted(() => {
 }
 
 .right-panel {
-  width: 170px;
+  width: 190px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -805,7 +1016,7 @@ onUnmounted(() => {
 
 /* ==================== 排行榜面板 ==================== */
 .leaderboard-panel {
-  width: 210px;
+  width: 280px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -858,15 +1069,27 @@ onUnmounted(() => {
 
 .lb-rank-num {
   font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 900;
-  min-width: 28px;
+  min-width: 22px;
   text-align: center;
+}
+
+.lb-rank-id {
+  flex: 1;
+  font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0 6px;
 }
 
 .lb-rank-score {
   font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.05em;
 }
@@ -874,24 +1097,34 @@ onUnmounted(() => {
 /* 排行榜排名配色 */
 .lb-rank-1 .lb-rank-num,
 .lb-rank-1 .lb-rank-score { color: #ffd700; text-shadow: 0 0 6px rgba(255, 215, 0, 0.4); }
+.lb-rank-1 .lb-rank-id { color: rgba(255, 215, 0, 0.6); }
 
 .lb-rank-2 .lb-rank-num,
 .lb-rank-2 .lb-rank-score { color: #e8e8e8; text-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
+.lb-rank-2 .lb-rank-id { color: rgba(232, 232, 232, 0.6); }
 
 .lb-rank-3 .lb-rank-num,
 .lb-rank-3 .lb-rank-score { color: #c0a060; text-shadow: 0 0 5px rgba(192, 160, 96, 0.3); }
+.lb-rank-3 .lb-rank-id { color: rgba(192, 160, 96, 0.6); }
 
 .lb-rank-4 .lb-rank-num,
 .lb-rank-4 .lb-rank-score { color: rgba(var(--c-light-blue), 0.8); }
+.lb-rank-4 .lb-rank-id { color: rgba(var(--c-light-blue), 0.55); }
 
 .lb-rank-5 .lb-rank-num,
 .lb-rank-5 .lb-rank-score { color: rgba(var(--c-pink), 0.7); }
+.lb-rank-5 .lb-rank-id { color: rgba(var(--c-pink), 0.5); }
+
+.lb-rank-6 .lb-rank-num,
+.lb-rank-6 .lb-rank-score { color: rgba(80, 220, 220, 0.65); }
+.lb-rank-6 .lb-rank-id { color: rgba(80, 220, 220, 0.4); }
 
 .lb-rank-1 { border-left: 2px solid #ffd700; }
 .lb-rank-2 { border-left: 2px solid #e8e8e8; }
 .lb-rank-3 { border-left: 2px solid #c0a060; }
 .lb-rank-4 { border-left: 2px solid rgba(var(--c-light-blue), 0.5); }
 .lb-rank-5 { border-left: 2px solid rgba(var(--c-pink), 0.4); }
+.lb-rank-6 { border-left: 2px solid rgba(80, 220, 220, 0.4); }
 
 /* ==================== 响应式布局 ==================== */
 
@@ -1522,5 +1755,154 @@ canvas#next-piece {
   color: #fff;
   box-shadow: 0 0 16px rgba(200, 150, 255, 0.4);
   transform: scale(0.94);
+}
+
+/* ==================== 全屏粒子烟花画布 ==================== */
+.fireworks-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 500;
+}
+
+/* ==================== 新高分弹窗 ==================== */
+.hs-modal-backdrop {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.103);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.hs-modal.glass-panel {
+  background: rgba(20, 10, 30, 0.13);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 2px solid rgba(var(--c-pink), 0.4);
+  border-radius: 16px;
+  box-shadow: 0 0 40px rgba(var(--c-pink), 0.3), 0 0 80px rgba(var(--c-light-blue), 0.15);
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-width: 380px;
+  max-width: 90vw;
+  animation: modalIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes modalIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.hs-gif {
+  width: 140px;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 4px;
+}
+
+.hs-title {
+  font-family: 'Courier New', monospace;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #ffd700;
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.3);
+  letter-spacing: 0.12em;
+}
+
+.hs-score {
+  font-family: 'Courier New', monospace;
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 10px #fff, 0 0 20px rgba(var(--c-light-blue), 0.5);
+  letter-spacing: 0.1em;
+}
+
+.hs-rank-info {
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: rgba(var(--c-light-blue), 0.7);
+  letter-spacing: 0.15em;
+  margin-bottom: 4px;
+}
+
+.hs-input {
+  width: 260px;
+  max-width: 80%;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(var(--c-pink), 0.4);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
+  font-size: 1rem;
+  text-align: center;
+  letter-spacing: 0.1em;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.hs-input:focus {
+  border-color: rgba(var(--c-pink), 0.8);
+  box-shadow: 0 0 16px rgba(var(--c-pink), 0.3);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.hs-input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.08em;
+}
+
+.hs-buttons {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.hs-btn {
+  padding: 10px 28px;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+.submit-btn {
+  background: rgba(var(--c-pink), 0.2);
+  border: 2px solid rgba(var(--c-pink), 0.5);
+  color: #fff;
+}
+
+.submit-btn:hover {
+  background: rgba(var(--c-pink), 0.35);
+  border-color: rgba(var(--c-pink), 0.8);
+  box-shadow: 0 0 20px rgba(var(--c-pink), 0.4);
+}
+
+.skip-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.skip-btn:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.8);
 }
 </style>
