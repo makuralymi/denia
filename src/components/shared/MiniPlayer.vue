@@ -1,27 +1,39 @@
 <template>
   <div class="mini-player-wrapper">
-    <!-- 玻璃态控制面板 -->
-    <div class="player-panel">
+    <!-- 玻璃态控制面板（可拖曳） -->
+    <div
+      ref="playerPanelRef"
+      class="player-panel"
+      :class="{ dragging: isDragging, collapsed: collapsed }"
+      :style="{ transform: `translateX(${panelTranslateX})` }"
+      @mousedown.prevent="onDragStart"
+      @touchstart.prevent="onTouchDragStart"
+    >
+      <!-- 拖曳手柄视觉提示 -->
+      <div class="drag-handle" :class="{ active: isDragging }">
+        <span></span><span></span><span></span>
+      </div>
+
       <!-- 播放/暂停及上一首/下一首控制区 -->
       <div class="controls-area">
-        <button class="control-btn" @click="prevSong" title="上一首">
+        <button class="control-btn" @click.stop="prevSong" title="上一首">
           <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg>
         </button>
-        <div 
-          class="record-disk" 
+        <div
+          class="record-disk"
           :class="{ 'is-playing': isPlaying }"
-          @click="togglePlay"
+          @click.stop="togglePlay"
         >
           <div class="record-center"></div>
         </div>
-        <button class="control-btn" @click="nextSong" title="下一首">
+        <button class="control-btn" @click.stop="nextSong" title="下一首">
           <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
         </button>
-        <button class="control-btn" @click="togglePlaylist" title="播放列表" :class="{ 'active': showPlaylist }">
+        <button class="control-btn" @click.stop="togglePlaylist" title="播放列表" :class="{ 'active': showPlaylist }">
           <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
         </button>
       </div>
-      
+
       <div class="song-info">
         <div class="song-title">{{ currentSong?.name || 'DENIA THEME' }}</div>
         <div class="time-display">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</div>
@@ -30,12 +42,12 @@
 
     <!-- 播放列表弹窗 -->
     <transition name="fade">
-      <div v-show="showPlaylist" class="playlist-panel">
+      <div v-show="showPlaylist && !collapsed" class="playlist-panel">
         <div class="playlist-header">PLAYLIST</div>
         <div class="playlist-items">
-          <div 
-            v-for="(song, index) in playlist" 
-            :key="song.url" 
+          <div
+            v-for="(song, index) in playlist"
+            :key="song.url"
             class="playlist-item"
             :class="{ 'active': currentSongIndex === index }"
             @click="playSong(index)"
@@ -78,11 +90,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
+import { useRoute } from 'vue-router';
 import { useAudioStore } from '@/stores/audioStore';
 import dollW from '@/canvas/effects/doll_w.png';
 import dollB from '@/canvas/effects/doll_b.png';
 
+const route = useRoute();
 const audioStore = useAudioStore();
 
 // 音频系统状态
@@ -102,10 +116,6 @@ const playlist = ref<Song[]>([
   { name: '坠入虚无 (Decensus Ad Nihilum) - 鸣潮先约电台、Crywolf、kahoca', url: '/audio/audio2.mp3' },
   { name: '直到下次再见 (Dasvidaniya) - 鸣潮先约电台、Crywolf、Cxssidy', url: '/audio/audio3.mp3' },
   { name: '予以宽慰的黑夜', url: '/audio/audio4.mp3' },
-
-  // 预留位置，后续添加音频直接写在这里：
-  // { name: 'SECOND ROUND', url: '/audio/audio1.mp3' },
-  // { name: 'MAIN MENU', url: '/audio/audio2.mp3' }
 ]);
 const currentSongIndex = ref(2); // 默认播放 audio3
 const currentSong = computed(() => playlist.value[currentSongIndex.value]);
@@ -124,6 +134,133 @@ const formatTime = (seconds: number) => {
   return `${m}:${s}`;
 };
 
+// ==================== 拖曳与边缘吸附 ====================
+const playerPanelRef = ref<HTMLElement | null>(null);
+const panelWidth = ref(460); // 初始估算值，会在 onMounted 中实测
+const isDragging = ref(false);
+const collapsed = ref(false);
+const dragCurrent = ref(0); // 拖曳中的实时偏移
+
+// 拖曳起始状态
+let dragStartMouseX = 0;
+let dragStartOffset = 0;
+
+// 最终面板偏移（含收起状态）
+const COLLAPSED_VISIBLE = 36; // 收起时露出的像素
+const SNAP_THRESHOLD_RATIO = 0.35; // 拖动超过面板宽度的35%即触发收起
+
+const panelTranslateX = computed(() => {
+  if (isDragging.value) {
+    return `${dragCurrent.value}px`;
+  }
+  if (collapsed.value) {
+    return `${-(panelWidth.value - COLLAPSED_VISIBLE)}px`;
+  }
+  return '0px';
+});
+
+function onDragStart(e: MouseEvent) {
+  // 如果已经收起，点击即展开
+  if (collapsed.value) {
+    expand();
+    return;
+  }
+  // 如果点在按钮上，不触发拖曳
+  const target = e.target as HTMLElement;
+  if (target.closest('button') || target.closest('.record-disk')) return;
+
+  isDragging.value = true;
+  dragStartMouseX = e.clientX;
+  dragStartOffset = collapsed.value
+    ? -(panelWidth.value - COLLAPSED_VISIBLE)
+    : dragCurrent.value;
+  document.addEventListener('mousemove', onDragMove);
+  document.addEventListener('mouseup', onDragEnd);
+}
+
+function onDragMove(e: MouseEvent) {
+  if (!isDragging.value) return;
+  const delta = e.clientX - dragStartMouseX;
+  const newOffset = dragStartOffset + delta;
+  // 允许从0到面板宽度的范围拖曳
+  dragCurrent.value = Math.min(0, Math.max(-panelWidth.value, newOffset));
+}
+
+function onDragEnd(_e: MouseEvent) {
+  document.removeEventListener('mousemove', onDragMove);
+  document.removeEventListener('mouseup', onDragEnd);
+  isDragging.value = false;
+
+  // 判断是否吸附收起
+  if (dragCurrent.value < -(panelWidth.value * SNAP_THRESHOLD_RATIO)) {
+    collapsed.value = true;
+    dragCurrent.value = 0;
+  } else {
+    collapsed.value = false;
+    dragCurrent.value = 0;
+  }
+}
+
+// 触控拖曳
+function onTouchDragStart(e: TouchEvent) {
+  if (collapsed.value) {
+    expand();
+    return;
+  }
+  const target = e.target as HTMLElement;
+  if (target.closest('button') || target.closest('.record-disk')) return;
+
+  const touch = e.touches[0];
+  isDragging.value = true;
+  dragStartMouseX = touch.clientX;
+  dragStartOffset = collapsed.value
+    ? -(panelWidth.value - COLLAPSED_VISIBLE)
+    : dragCurrent.value;
+  document.addEventListener('touchmove', onTouchDragMove, { passive: false });
+  document.addEventListener('touchend', onTouchDragEnd);
+}
+
+function onTouchDragMove(e: TouchEvent) {
+  if (!isDragging.value) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  const delta = touch.clientX - dragStartMouseX;
+  const newOffset = dragStartOffset + delta;
+  dragCurrent.value = Math.min(0, Math.max(-panelWidth.value, newOffset));
+}
+
+function onTouchDragEnd(_e: TouchEvent) {
+  document.removeEventListener('touchmove', onTouchDragMove);
+  document.removeEventListener('touchend', onTouchDragEnd);
+  isDragging.value = false;
+
+  if (dragCurrent.value < -(panelWidth.value * SNAP_THRESHOLD_RATIO)) {
+    collapsed.value = true;
+    dragCurrent.value = 0;
+  } else {
+    collapsed.value = false;
+    dragCurrent.value = 0;
+  }
+}
+
+function expand() {
+  collapsed.value = false;
+  dragCurrent.value = 0;
+}
+
+// ==================== 路由监听：games 页面默认收起 ====================
+watch(
+  () => route.name,
+  (name) => {
+    if (name === 'games') {
+      collapsed.value = true;
+      dragCurrent.value = 0;
+    }
+  },
+  { immediate: true }
+);
+
+// ==================== 音频播放逻辑 ====================
 const loadPlaylist = () => {
   if (playlist.value.length > 0) {
     audio.src = playlist.value[currentSongIndex.value].url;
@@ -149,11 +286,11 @@ const playSong = (index: number) => {
 
 const togglePlay = () => {
   if (playlist.value.length === 0) return;
-  
+
   if (!audioContext) {
     initAudioPath();
   }
-  
+
   if (audioContext.state === 'suspended') {
     audioContext.resume();
   }
@@ -202,12 +339,10 @@ let animationFrameId: number;
 
 const initAudioPath = () => {
   if (audioContext) return;
-  // 必须在用户发生交互后（如点击播放）进行实例化
   audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
   analyser = audioContext.createAnalyser();
-  analyser.fftSize = 512; // 更细腻的频段
-  
-  // Connect Source -> Analyser -> Destination
+  analyser.fftSize = 512;
+
   const source = audioContext.createMediaElementSource(audio);
   source.connect(analyser);
   analyser.connect(audioContext.destination);
@@ -227,31 +362,22 @@ const drawVisualizer = () => {
 
   analyser.getByteFrequencyData(dataArray as any);
 
-  // 清空画布
   ctx.clearRect(0, 0, width, height);
 
-  // 根据屏幕宽度自适应调整间隔与单个波的宽度
-  // 为了美观，我们不要画全部频谱(高频很多都是空的)，取一半即可
-  const renderLength = Math.floor(dataArray.length * 0.75); 
-  const gap = 2; // 条与条之间的固定间隙
-  // 每个音柱的宽度自适应 = (总宽度 - 间隙总宽度) / 音柱数量
-  const barWidth = Math.max(1, (width - gap * renderLength) / renderLength); 
+  const renderLength = Math.floor(dataArray.length * 0.75);
+  const gap = 2;
+  const barWidth = Math.max(1, (width - gap * renderLength) / renderLength);
 
   let x = 0;
   for (let i = 0; i < renderLength; i++) {
-    // 限制高度比例映射
     const barHeight = (dataArray[i] / 255) * height;
 
-    // 采用与主题匹配的从底到上的半透明粉紫渐变色条（高亮版本）
     const gradient = ctx.createLinearGradient(0, height, 0, height - barHeight);
-    gradient.addColorStop(0, 'rgba(255, 180, 200, 1)'); // 底层更亮的粉白
-    gradient.addColorStop(1, 'rgba(190, 220, 255, 0.9)'); // 顶部更饱满的浅蓝
-    
-    ctx.fillStyle = gradient;
-    
-    // Y轴采用高度差，因为 Canvas 的 0,0 在左上角，要从底部伸出
-    ctx.fillRect(x, height - barHeight, barWidth, barHeight);
+    gradient.addColorStop(0, 'rgba(255, 180, 200, 1)');
+    gradient.addColorStop(1, 'rgba(190, 220, 255, 0.9)');
 
+    ctx.fillStyle = gradient;
+    ctx.fillRect(x, height - barHeight, barWidth, barHeight);
     x += barWidth + gap;
   }
 };
@@ -259,15 +385,21 @@ const drawVisualizer = () => {
 const handleResize = () => {
   if (visualizerCanvas.value) {
     visualizerCanvas.value.width = window.innerWidth;
-    visualizerCanvas.value.height = 80; // 波谱最大高度
+    visualizerCanvas.value.height = 80;
   }
 };
 
 // 绑定原生音频事件
 onMounted(() => {
   loadPlaylist();
-  
-  // 初始化画布尺寸
+
+  // 实测面板宽度
+  nextTick(() => {
+    if (playerPanelRef.value) {
+      panelWidth.value = playerPanelRef.value.offsetWidth;
+    }
+  });
+
   handleResize();
   window.addEventListener('resize', handleResize);
 
@@ -291,18 +423,22 @@ onMounted(() => {
     if (!audioContext) {
       initAudioPath();
     }
-    drawVisualizer(); // 开始绘制波谱
+    drawVisualizer();
   });
 
   audio.addEventListener('pause', () => {
     isPlaying.value = false;
     audioStore.isPlaying = false;
-    cancelAnimationFrame(animationFrameId); // 停止绘制
+    cancelAnimationFrame(animationFrameId);
   });
 });
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
+  document.removeEventListener('mousemove', onDragMove);
+  document.removeEventListener('mouseup', onDragEnd);
+  document.removeEventListener('touchmove', onTouchDragMove);
+  document.removeEventListener('touchend', onTouchDragEnd);
   cancelAnimationFrame(animationFrameId);
   if (audioContext) {
     audioContext.close();
@@ -318,15 +454,41 @@ onUnmounted(() => {
   bottom: 0;
   left: 0;
   width: 100%;
-  pointer-events: none; /* 让顶层 wrapper 透传 */
+  pointer-events: none;
   z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-bottom: 2rem; /* 距离底部进度条的高度 */
+  padding-bottom: 2rem;
 }
 
-/* 玻璃态面板 */
+/* ==================== 拖曳手柄 ==================== */
+.drag-handle {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 0 6px;
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  margin-left: -4px;
+  margin-right: 2px;
+}
+
+.player-panel:hover .drag-handle,
+.drag-handle.active {
+  opacity: 0.5;
+}
+
+.drag-handle span {
+  display: block;
+  width: 12px;
+  height: 2px;
+  background: rgba(var(--c-light-blue), 0.8);
+  border-radius: 1px;
+}
+
+/* ==================== 玻璃态面板 ==================== */
 .player-panel {
   pointer-events: auto;
   margin-left: 3rem;
@@ -341,15 +503,29 @@ onUnmounted(() => {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(var(--c-light-blue), 0.2);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(var(--c-pink), 0.1);
-  transition: transform 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.35s ease, border-color 0.35s ease;
+  position: relative;
+  user-select: none;
 }
 
-.player-panel:hover {
-  transform: translateY(-3px);
+.player-panel.dragging {
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 15px 40px rgba(var(--c-pink), 0.4), inset 0 0 0 1px rgba(var(--c-pink), 0.2);
+  border-color: rgba(var(--c-pink), 0.5);
+  cursor: grabbing;
+}
+
+.player-panel.collapsed {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 15px rgba(var(--c-pink), 0.15);
+  border-color: rgba(var(--c-pink), 0.3);
+}
+
+.player-panel:not(.dragging):not(.collapsed):hover {
+  transform: translateX(0) translateY(-3px) !important;
   border-color: rgba(var(--c-pink), 0.4);
 }
 
-/* 控制按钮组 */
+/* ==================== 控制按钮组 ==================== */
 .controls-area {
   display: flex;
   align-items: center;
@@ -428,6 +604,7 @@ onUnmounted(() => {
   letter-spacing: 0.15rem;
   font-weight: 300;
   text-shadow: 0 0 10px rgba(var(--c-pink), 0.5);
+  white-space: nowrap;
 }
 
 .time-display {
@@ -441,7 +618,7 @@ onUnmounted(() => {
 .playlist-panel {
   pointer-events: auto;
   position: absolute;
-  bottom: calc(100% + 15px); /* 在控制面板上方 */
+  bottom: calc(100% + 15px);
   left: 3rem;
   width: 280px;
   max-height: 250px;
@@ -554,7 +731,6 @@ onUnmounted(() => {
   cursor: pointer;
 }
 
-/* 轨道隐藏至仅可被鼠标划过触发，增加呼吸感 */
 .progress-track {
   width: 100%;
   height: 2px;
@@ -568,7 +744,6 @@ onUnmounted(() => {
   height: 6px;
 }
 
-/* 填充条 */
 .progress-fill {
   height: 100%;
   background: linear-gradient(90deg, rgba(var(--c-purple), 0.8), rgb(var(--c-pink)));
@@ -577,7 +752,6 @@ onUnmounted(() => {
   transition: width 0.1s linear;
 }
 
-/* 端点发光头 */
 .progress-glow-head {
   position: absolute;
   right: 0;
@@ -590,7 +764,6 @@ onUnmounted(() => {
   border-radius: 4px;
 }
 
-/* 跟随进度条的 Doll — 头部 (doll_b) */
 .progress-doll-head {
   position: absolute;
   right: 0;
@@ -602,7 +775,6 @@ onUnmounted(() => {
   filter: drop-shadow(0 0 8px rgba(250, 191, 253, 0.7));
 }
 
-/* 固定于进度条右侧尾部的 Doll (doll_w) */
 .progress-doll-tail {
   position: absolute;
   right: 0;

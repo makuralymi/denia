@@ -43,6 +43,12 @@ const router = createRouter({
           name: 'ai',
           component: () => import('@/views/AIChat.vue'),
           meta: { seo: 'ai' }
+        },
+        {
+          path: 'games', // 电玩页路由
+          name: 'games',
+          component: () => import('@/views/Games.vue'),
+          meta: { seo: 'games' }
         }
       ]
     }

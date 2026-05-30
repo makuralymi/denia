@@ -119,6 +119,24 @@ const pageMeta: Record<string, Record<string, Partial<SeoMeta>>> = {
       title: 'AI 데니아 | 채팅',
       description: 'AI 데니아와 대화 — Dify 기반 지능형 챗봇, 몰입형 캐릭터 인터랙션.'
     }
+  },
+  games: {
+    'zh-CN': {
+      title: '电玩 - 达妮娅 | Denia',
+      description: '电玩小游戏 — 拉海洛方块（霓虹俄罗斯方块）等复古街机游戏合集'
+    },
+    en: {
+      title: 'Games - Denia',
+      description: 'Arcade games — La Hailuo Blocks (neon Tetris) and more retro arcade fun.'
+    },
+    ja: {
+      title: 'ゲーム - ダニア | Denia',
+      description: 'アーケードゲーム — ラハイロブロック（ネオンテトリス）などのレトロアーケードコレクション。'
+    },
+    ko: {
+      title: '게임 - 데니아 | Denia',
+      description: '아케이드 게임 — 라하이로 블록(네온 테트리스) 등 레트로 아케이드 모음.'
+    }
   }
 }
 

@@ -10,6 +10,7 @@
         <router-link to="/home/wiki" exact-active-class="active" class="nav-item">WIKI</router-link>
         <router-link to="/home/gallery" exact-active-class="active" class="nav-item">GALLERY</router-link>
         <router-link to="/home/ai" exact-active-class="active" class="nav-item">AI</router-link>
+        <router-link to="/home/games" exact-active-class="active" class="nav-item">GAMES</router-link>
       </nav>
 
       <div class="user-block">
