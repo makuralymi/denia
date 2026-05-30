@@ -14,6 +14,10 @@ export default defineConfig({
     port: 3000,
     open: true,
     proxy: {
+      '/api/leaderboard': {
+        target: 'http://127.0.0.1:8788',
+        changeOrigin: true
+      },
       '/api/gallery': {
         target: 'https://r2-jk.makuraly.xyz',
         changeOrigin: true,
