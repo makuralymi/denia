@@ -201,13 +201,11 @@ const DIFFICULTIES = [
   { name: 'INSANE',  speed: 120,  multiplier: 6 },
 ]
 
-// ==================== 排行榜 (localStorage 持久化) ====================
+// ==================== 排行榜 (Cloudflare D1) ====================
 interface LeaderboardEntry {
   id: string
   score: number
 }
-
-const LS_KEY = 'lahailuo_leaderboard'
 
 const DEFAULT_LEADERBOARD: LeaderboardEntry[] = [
   { id: '想成为人类', score: 934680 },
@@ -216,26 +214,22 @@ const DEFAULT_LEADERBOARD: LeaderboardEntry[] = [
   { id: '我的论文被谁吃了', score: 406420 },
 ]
 
-function loadLeaderboard(): LeaderboardEntry[] {
+const leaderboard = ref<LeaderboardEntry[]>([...DEFAULT_LEADERBOARD])
+
+async function loadLeaderboard() {
   try {
-    const raw = localStorage.getItem(LS_KEY)
-    if (raw) {
-      const data = JSON.parse(raw) as LeaderboardEntry[]
-      if (Array.isArray(data) && data.length > 0) return data
+    const res = await fetch('/api/leaderboard')
+    if (res.ok) {
+      const data = await res.json() as LeaderboardEntry[]
+      if (Array.isArray(data) && data.length > 0) {
+        leaderboard.value = data
+        return
+      }
     }
-  } catch {}
-  // 首次加载写回预设数据
-  saveLeaderboard(DEFAULT_LEADERBOARD)
-  return DEFAULT_LEADERBOARD
+  } catch (err) {
+    console.error('Failed to load leaderboard', err)
+  }
 }
-
-function saveLeaderboard(data: LeaderboardEntry[]) {
-  try {
-    localStorage.setItem(LS_KEY, JSON.stringify(data))
-  } catch {}
-}
-
-const leaderboard = ref<LeaderboardEntry[]>(loadLeaderboard())
 
 function formatLeaderboardScore(s: number): string {
   return s.toString().padStart(6, '0')
@@ -250,14 +244,25 @@ function checkHighScore(sc: number): number {
   return 0
 }
 
-function insertScore(id: string, sc: number) {
+async function insertScore(id: string, sc: number) {
+  // 乐观更新
   const entry: LeaderboardEntry = { id, score: sc }
   const list = [...leaderboard.value, entry]
   list.sort((a, b) => b.score - a.score)
-  // 保留前6名
-  const top = list.slice(0, 6)
-  leaderboard.value = top
-  saveLeaderboard(top)
+  leaderboard.value = list.slice(0, 6)
+
+  // 异步提交到 D1
+  try {
+    await fetch('/api/leaderboard', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, score: sc }),
+    })
+    // 提交成功后静默重新拉取一下最新数据，以防有并发冲突
+    await loadLeaderboard()
+  } catch (err) {
+    console.error('Failed to submit score', err)
+  }
 }
 
 // ==================== 新高分弹窗 ====================
@@ -828,6 +833,7 @@ function doTogglePause() {
 
 // ==================== 生命周期 ====================
 onMounted(() => {
+  loadLeaderboard()
   canvas = document.getElementById('tetris') as HTMLCanvasElement
   ctx = canvas.getContext('2d')!
   nextCanvas = document.getElementById('next-piece') as HTMLCanvasElement

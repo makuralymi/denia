@@ -1,0 +1,7 @@
+name = "denia-pages"
+compatibility_date = "2024-03-29"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "denia-db"
+database_id = "f15472f2-1dc7-4047-aecd-2c4a0c11e359"
