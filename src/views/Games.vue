@@ -65,13 +65,17 @@
             </div>
           </div>
           <button class="start-btn" @click="startGame">▶ START GAME</button>
-          <div class="menu-hint">← ↓ → move &nbsp; ↑ rotate &nbsp; SPACE drop &nbsp; P pause</div>
+          <div class="menu-hint">WASD / ← ↓ → move &nbsp; W / ↑ rotate &nbsp; SPACE drop &nbsp; P pause</div>
         </div>
 
         <!-- 暂停覆盖层 -->
         <div v-if="gameState === 'paused'" class="board-overlay pause-overlay" @click="resumeGame">
           <div class="overlay-title">PAUSED</div>
           <div class="overlay-hint">CLICK TO RESUME</div>
+          <div class="pause-actions">
+            <button class="pause-btn-icon" title="重开" @click.stop="startGame">↺</button>
+            <button class="pause-btn-icon" title="主页" @click.stop="backToMenu">🏠</button>
+          </div>
         </div>
 
         <!-- 游戏结束覆盖层 -->
@@ -220,37 +224,38 @@ function playSound(type: 'move' | 'rotate' | 'drop' | 'clear' | 'tetris') {
   gain.connect(audioCtx.destination)
 
   const t = audioCtx.currentTime
+  const vol = 3.0 // 全局音量放大系数
 
   if (type === 'move') {
     osc.type = 'sine'
     osc.frequency.setValueAtTime(440, t)
     osc.frequency.exponentialRampToValueAtTime(220, t + 0.05)
-    gain.gain.setValueAtTime(0.1, t)
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.05)
+    gain.gain.setValueAtTime(0.1 * vol, t)
+    gain.gain.exponentialRampToValueAtTime(0.01 * vol, t + 0.05)
     osc.start(t)
     osc.stop(t + 0.05)
   } else if (type === 'rotate') {
     osc.type = 'square'
     osc.frequency.setValueAtTime(330, t)
     osc.frequency.exponentialRampToValueAtTime(660, t + 0.05)
-    gain.gain.setValueAtTime(0.05, t)
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.05)
+    gain.gain.setValueAtTime(0.05 * vol, t)
+    gain.gain.exponentialRampToValueAtTime(0.01 * vol, t + 0.05)
     osc.start(t)
     osc.stop(t + 0.05)
   } else if (type === 'drop') {
     osc.type = 'triangle'
     osc.frequency.setValueAtTime(150, t)
     osc.frequency.exponentialRampToValueAtTime(50, t + 0.1)
-    gain.gain.setValueAtTime(0.1, t)
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1)
+    gain.gain.setValueAtTime(0.1 * vol, t)
+    gain.gain.exponentialRampToValueAtTime(0.01 * vol, t + 0.1)
     osc.start(t)
     osc.stop(t + 0.1)
   } else if (type === 'clear') {
     osc.type = 'square'
     osc.frequency.setValueAtTime(440, t)
     osc.frequency.setValueAtTime(554.37, t + 0.1)
-    gain.gain.setValueAtTime(0.1, t)
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2)
+    gain.gain.setValueAtTime(0.1 * vol, t)
+    gain.gain.exponentialRampToValueAtTime(0.01 * vol, t + 0.2)
     osc.start(t)
     osc.stop(t + 0.2)
   } else if (type === 'tetris') {
@@ -259,8 +264,8 @@ function playSound(type: 'move' | 'rotate' | 'drop' | 'clear' | 'tetris') {
     osc.frequency.setValueAtTime(554.37, t + 0.1)
     osc.frequency.setValueAtTime(659.25, t + 0.2)
     osc.frequency.setValueAtTime(880, t + 0.3)
-    gain.gain.setValueAtTime(0.15, t)
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5)
+    gain.gain.setValueAtTime(0.15 * vol, t)
+    gain.gain.exponentialRampToValueAtTime(0.01 * vol, t + 0.5)
     osc.start(t)
     osc.stop(t + 0.5)
   }
@@ -844,10 +849,10 @@ function onKeyDown(event: KeyboardEvent) {
   if (gameState.value === 'paused') return
 
   // 游戏进行中
-  if (event.key === 'ArrowLeft') { event.preventDefault(); playerMove(-1) }
-  else if (event.key === 'ArrowRight') { event.preventDefault(); playerMove(1) }
-  else if (event.key === 'ArrowDown') { event.preventDefault(); playerDrop() }
-  else if (event.key === 'ArrowUp') { event.preventDefault(); playerRotate(1) }
+  if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') { event.preventDefault(); playerMove(-1) }
+  else if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') { event.preventDefault(); playerMove(1) }
+  else if (event.key === 'ArrowDown' || event.key.toLowerCase() === 's') { event.preventDefault(); playerDrop() }
+  else if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') { event.preventDefault(); playerRotate(1) }
   else if (event.key === ' ') {
     event.preventDefault()
     if (!player.matrix) return
@@ -1653,6 +1658,38 @@ canvas#next-piece {
 /* ==================== 暂停覆盖层 ==================== */
 .pause-overlay {
   gap: 8px;
+}
+
+.pause-actions {
+  display: flex;
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.pause-btn-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  margin: 0;
+}
+
+.pause-btn-icon:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #fff033;
+  color: #fff033;
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(255, 240, 51, 0.4);
 }
 
 /* ==================== 游戏结束覆盖层 ==================== */
