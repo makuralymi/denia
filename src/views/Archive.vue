@@ -677,4 +677,28 @@ const toggleNav = () => {
   font-size: 14px;
   letter-spacing: 0;
 }
+
+/* --- 移动端进一步适配 --- */
+@media screen and (max-width: 768px) {
+  .side-nav {
+    display: none; /* 移动端隐藏侧边导航 */
+  }
+  .banner-actions {
+    flex-direction: column;
+    gap: 1rem;
+    width: 80%;
+  }
+  .banner-btn {
+    width: 100%;
+    text-align: center;
+  }
+  .role-card {
+    padding: 1.5rem;
+  }
+  .article-footer {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+  }
+}
 </style>

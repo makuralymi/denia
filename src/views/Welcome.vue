@@ -3,7 +3,7 @@
     <!-- 玻璃态拟物卡片结构 (Glassmorphism) -->
     <div class="glass-panel">
       <h1 class="title">生日快乐DENIA</h1>
-      <div class="divider">⚠️正在制作娅娅对话语音AI,敬请期待！</div>
+      <div class="divider">-愿你早日自虚无归来-</div>
       <p class="subtitle">System Initialization Complete</p>
       
       <div class="nav-links">
@@ -107,5 +107,40 @@ function onNavClick() {
   border-color: rgb(var(--c-light-blue));
   box-shadow: 0 0 20px rgba(var(--c-light-blue), 0.5);
   transform: scale(1.05);
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+  .title {
+    font-size: clamp(2rem, 8vw, 3rem);
+    letter-spacing: 0.2rem;
+  }
+  
+  .subtitle {
+    font-size: 0.8rem;
+    letter-spacing: 0.1rem;
+  }
+
+  .divider {
+    font-size: 16px;
+    margin: 1rem auto;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .glass-panel {
+    padding: 2rem 1.5rem;
+    width: 85%;
+  }
+
+  .nav-btn {
+    padding: 0.8rem 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
 </style>

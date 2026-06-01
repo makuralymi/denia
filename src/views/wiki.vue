@@ -2530,4 +2530,25 @@ const closeFullscreen = () => {
     justify-content: center;
   }
 }
+
+@media screen and (max-width: 768px) {
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  .data-table th, .data-table td {
+    padding: 8px 10px;
+  }
+  .role-component {
+    padding: 10px;
+  }
+  .material-cell {
+    font-size: 0.8rem;
+  }
+  .side-nav {
+    display: none; /* 较小屏幕直接隐藏导航栏 */
+  }
+}
 </style>

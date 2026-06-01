@@ -6,8 +6,8 @@
       class="player-panel"
       :class="{ dragging: isDragging, collapsed: collapsed }"
       :style="{ transform: `translateX(${panelTranslateX})` }"
-      @mousedown.prevent="onDragStart"
-      @touchstart.prevent="onTouchDragStart"
+      @mousedown="onDragStart"
+      @touchstart="onTouchDragStart"
     >
       <!-- 拖曳手柄视觉提示 -->
       <div class="drag-handle" :class="{ active: isDragging }">
@@ -169,6 +169,8 @@ function onDragStart(e: MouseEvent) {
   const target = e.target as HTMLElement;
   if (target.closest('button') || target.closest('.record-disk')) return;
 
+  e.preventDefault(); // <-- 在确认不是按钮之后再阻止默认行为
+
   isDragging.value = true;
   dragStartMouseX = e.clientX;
   dragStartOffset = collapsed.value
@@ -210,6 +212,8 @@ function onTouchDragStart(e: TouchEvent) {
   const target = e.target as HTMLElement;
   if (target.closest('button') || target.closest('.record-disk')) return;
 
+  // e.preventDefault(); // 移动端 touchstart 不要直接 preventDefault，以免引发其他滚动失灵
+  
   const touch = e.touches[0];
   isDragging.value = true;
   dragStartMouseX = touch.clientX;
@@ -822,6 +826,33 @@ onUnmounted(() => {
   100% {
     transform: translate(calc(-20px - 30px * var(--rand, 1)), calc(-30px - 20px * var(--rand, 1))) scale(0);
     opacity: 0;
+  }
+}
+
+/* ==================== 响应式适配 ==================== */
+@media screen and (max-width: 768px) {
+  .player-panel {
+    margin-left: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem 0.5rem 0.5rem;
+    gap: 0.8rem;
+  }
+  .playlist-panel {
+    left: 0.5rem;
+    width:calc(100vw - 1rem); /* 沾满屏幕，只留一点边距 */
+    max-width: 320px;
+    bottom: calc(100% + 10px);
+  }
+  .record-disk {
+    width: 40px;
+    height: 40px;
+  }
+  .doll-img {
+    width: 14px;
+    height: 20px;
+  }
+  .song-title {
+    font-size: 0.8rem;
   }
 }
 </style>
