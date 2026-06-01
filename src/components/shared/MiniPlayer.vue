@@ -1,5 +1,5 @@
 <template>
-  <div class="mini-player-wrapper">
+  <div class="mini-player-wrapper" :class="{ 'games-route': route.name === 'games' }">
     <!-- 玻璃态控制面板（可拖曳） -->
     <div
       ref="playerPanelRef"
@@ -831,6 +831,10 @@ onUnmounted(() => {
 
 /* ==================== 响应式适配 ==================== */
 @media screen and (max-width: 768px) {
+  .mini-player-wrapper.games-route {
+    display: none;
+  }
+
   .player-panel {
     margin-left: 0.5rem;
     margin-bottom: 0.5rem;

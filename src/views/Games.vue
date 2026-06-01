@@ -38,6 +38,14 @@
             @mouseup.prevent.stop="releaseMoveRight"
             @mouseleave.prevent.stop="releaseMoveRight"
           >▶</button>
+          <button
+            class="touch-key touch-key-down"
+            @touchstart.prevent.stop="doSpeedDown"
+            @mousedown.prevent.stop="doSpeedDown"
+            @touchend.prevent.stop="releaseSpeedDown"
+            @mouseup.prevent.stop="releaseSpeedDown"
+            @mouseleave.prevent.stop="releaseSpeedDown"
+          >▼</button>
         </div>
       </div>
 
@@ -82,14 +90,24 @@
         <div v-if="gameState === 'gameover'" class="board-overlay gameover-overlay" @click="backToMenu">
           <div class="overlay-title">GAME OVER</div>
           <div class="final-score">{{ formatScore(score) }}</div>
-          <div class="overlay-hint">CLICK TO RETURN</div>
+          <div class="gameover-actions">
+            <button class="gameover-action-btn" @click.stop="showLeaderboardModal = true">排行</button>
+            <button class="gameover-action-btn" @click.stop="backToMenu">主页</button>
+          </div>
+          <div class="overlay-hint">点击空白重载</div>
         </div>
       </div>
 
       <!-- 右侧 HUD：NEXT + 街机圆形按键 -->
       <div class="hud-panel right-panel">
-        <div class="hud-label" style="font-size: 18px;">NEXT</div>
-        <canvas id="next-piece" width="152" height="152"></canvas>
+        <div class="next-preview">
+          <div class="hud-label next-label">NEXT</div>
+          <canvas id="next-piece" width="152" height="152"></canvas>
+        </div>
+        <div class="info-box lines-box">
+          <div class="hud-label">LINES</div>
+          <p class="number-text" id="lines-count">00</p>
+        </div>
         <!-- 街机风格圆形操作按键：暂停在上，三角形功能键在下 -->
         <div v-if="gameState === 'playing' || gameState === 'paused'" class="arcade-buttons">
           <div class="arcade-btn-group pause-group">
@@ -142,25 +160,7 @@
         </div>
       </div>
 
-      <!-- 排行榜 -->
-      <div class="hud-panel leaderboard-panel">
-        <div class="lb-header">
-          <span class="lb-title">RANKING</span>
-          <span class="lb-header-icon">★</span>
-        </div>
-        <div class="lb-list">
-          <div
-            v-for="(entry, idx) in leaderboard"
-            :key="idx"
-            class="lb-row"
-            :class="`lb-rank-${idx + 1}`"
-          >
-            <span class="lb-rank-num">{{ idx + 1 }}</span>
-            <span class="lb-rank-id">{{ entry.id }}</span>
-            <span class="lb-rank-score">{{ formatLeaderboardScore(entry.score) }}</span>
-          </div>
-        </div>
-      </div>
+      <!-- 排行榜保留为弹窗展示，游戏结束后通过按钮打开 -->
     </div>
 
     <!-- 全屏粒子烟花 -->
@@ -185,6 +185,29 @@
           <div class="hs-buttons">
             <button class="hs-btn submit-btn" @click="submitHighScore">SUBMIT</button>
             <button class="hs-btn skip-btn" @click="skipHighScore">SKIP</button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+    <Teleport to="body">
+      <div v-if="showLeaderboardModal" class="ranking-modal-backdrop" @click.self="showLeaderboardModal = false">
+        <div class="ranking-modal glass-panel">
+          <div class="lb-header">
+            <span class="lb-title">RANKING</span>
+            <button class="ranking-close-btn" @click="showLeaderboardModal = false">×</button>
+          </div>
+          <div class="lb-list">
+            <div
+              v-for="(entry, idx) in leaderboard"
+              :key="idx"
+              class="lb-row"
+              :class="`lb-rank-${idx + 1}`"
+            >
+              <span class="lb-rank-num">{{ idx + 1 }}</span>
+              <span class="lb-rank-id">{{ entry.id }}</span>
+              <span class="lb-rank-score">{{ formatLeaderboardScore(entry.score) }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -338,6 +361,7 @@ async function insertScore(id: string, sc: number) {
 
 // ==================== 新高分弹窗 ====================
 const showHighScoreModal = ref(false)
+const showLeaderboardModal = ref(false)
 const hsPlayerName = ref('')
 const newRank = ref(0)
 const hsNameInput = ref<HTMLInputElement | null>(null)
@@ -622,6 +646,7 @@ function doBlinkAnimation(diff: any) {
 
 function updateScore() {
   document.getElementById('score')!.innerText = formatScore(score.value)
+  document.getElementById('lines-count')!.innerText = lines.toString().padStart(2, '0')
 }
 
 // ==================== 游戏循环 ====================
@@ -659,6 +684,7 @@ function stopGameLoop() {
 // ==================== 游戏控制 ====================
 function startGame() {
   initAudio()
+  showLeaderboardModal.value = false
   
   const diff = DIFFICULTIES[selectedDifficulty.value]
   dropInterval = diff.speed
@@ -689,7 +715,10 @@ function resumeGame() {
 
 function backToMenu() {
   stopGameLoop()
+  showLeaderboardModal.value = false
   gameState.value = 'menu'
+  document.getElementById('score')!.innerText = '000000'
+  document.getElementById('lines-count')!.innerText = '00'
   document.getElementById('difficulty')!.innerText = '---'
 }
 
@@ -1146,7 +1175,7 @@ onUnmounted(() => {
 }
 
 .right-panel {
-  width: 190px;
+  width: 220px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1285,8 +1314,8 @@ onUnmounted(() => {
     padding: 20px 14px;
   }
   .right-panel {
-    width: 130px;
-    padding: 20px 14px;
+    width: 165px;
+    padding: 20px 16px;
   }
   .info-box {
     padding: 14px 4px;
@@ -1315,11 +1344,11 @@ onUnmounted(() => {
     font-size: 0.48rem;
   }
   .pause-btn {
-    width: 36px;
-    height: 36px;
+    width: 56px;
+    height: 56px;
   }
   .pause-btn .arcade-btn-icon {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
   }
 }
 
@@ -1372,7 +1401,7 @@ onUnmounted(() => {
     display: none;
   }
   .right-panel .hud-label {
-    display: none;
+    display: block;
   }
   .right-panel canvas {
     margin-top: 0;
@@ -1503,8 +1532,43 @@ canvas#tetris {
 }
 
 canvas#next-piece {
-  background: transparent;
-  margin-top: 16px;
+  width: 168px;
+  height: 168px;
+  background: rgba(12, 8, 35, 0.18);
+  margin-top: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.05);
+}
+
+.next-preview {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 8px 12px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.next-label {
+  font-size: 22px;
+}
+
+.lines-box {
+  width: 100%;
+  padding: 20px 8px;
+}
+
+.lines-box .hud-label {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.lines-box .number-text {
+  font-size: 34px;
+  letter-spacing: 4px;
 }
 
 /* ==================== 覆盖层通用 ==================== */
@@ -1595,7 +1659,7 @@ canvas#next-piece {
   color: rgba(255, 255, 255, 0.55);
   cursor: pointer;
   transition: all 0.2s ease;
-  font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
+  font-family: 'Courier New', monospace;
   font-size: 0.82rem;
   letter-spacing: 0.1em;
 }
@@ -1630,7 +1694,7 @@ canvas#next-piece {
   border: 2px solid rgba(200, 150, 255, 0.5);
   border-radius: 8px;
   color: #fff;
-  font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
+  font-family: 'Courier New', monospace;
   font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.15em;
@@ -1706,26 +1770,59 @@ canvas#next-piece {
   margin-bottom: 10px;
 }
 
-/* ==================== 街机圆形操作按键 ==================== */
-.touch-dpad {
+.gameover-actions {
   display: flex;
   gap: 12px;
-  justify-content: center;
-  margin-top: auto;
-  padding-top: 8px;
+  margin: 8px 0 12px;
 }
+
+.gameover-action-btn {
+  padding: 9px 16px;
+  background: rgba(200, 150, 255, 0.15);
+  border: 1px solid rgba(200, 150, 255, 0.5);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gameover-action-btn:hover {
+  background: rgba(200, 150, 255, 0.28);
+  border-color: rgba(200, 150, 255, 0.8);
+  box-shadow: 0 0 14px rgba(200, 150, 255, 0.35);
+}
+
 
 .touch-dpad .touch-key {
   flex: 1;
-  font-size: 1.4rem;
-  padding: 14px 0;
+  min-height: 68px;
+  font-size: 1.75rem;
+  padding: 18px 0;
+}
+/* ==================== 街机圆形操作按键 ==================== */
+.touch-dpad {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: 18px;
+  padding-top: 0;
+  transform: translateY(-50px);
+}
+
+.touch-key-down {
+  display: none;
 }
 
 .arcade-buttons {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 18px;
   width: 100%;
   margin-top: auto;
   padding-top: 12px;
@@ -1736,12 +1833,12 @@ canvas#next-piece {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 24px;
 }
 
 .arcade-triangle-bottom {
   display: flex;
-  gap: 28px;
+  gap: 36px;
   justify-content: center;
 }
 
@@ -1749,7 +1846,14 @@ canvas#next-piece {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+}
+
+.rotate-btn,
+.speed-btn,
+.drop-btn {
+  width: 68px;
+  height: 68px;
 }
 
 /* 圆形按键 */
@@ -2075,5 +2179,487 @@ canvas#next-piece {
 .skip-btn:hover {
   border-color: rgba(255, 255, 255, 0.5);
   color: rgba(255, 255, 255, 0.8);
+}
+
+.ranking-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.ranking-modal.glass-panel {
+  width: min(92vw, 360px);
+  padding: 22px;
+  border-radius: 16px;
+  background: rgba(20, 10, 30, 0.42);
+  border: 1px solid rgba(var(--c-light-blue), 0.28);
+  box-shadow: 0 0 34px rgba(var(--c-pink), 0.22), inset 0 0 20px rgba(255, 255, 255, 0.04);
+}
+
+.ranking-close-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  line-height: 1;
+  font-size: 1.15rem;
+}
+
+.ranking-close-btn:hover {
+  color: #fff;
+  border-color: rgba(var(--c-pink), 0.5);
+  box-shadow: 0 0 12px rgba(var(--c-pink), 0.25);
+}
+
+/* ==================== 移动端游戏布局：参考掌机面板 ==================== */
+@media screen and (max-width: 860px) {
+  .crt-tube {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    border-radius: 28px;
+  }
+
+  .game-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 88px;
+    grid-template-rows: auto minmax(0, auto) auto;
+    align-items: start;
+    gap: 8px;
+    width: min(100vw - 20px, 430px);
+    max-width: none;
+    min-height: 0;
+    height: 100vh;
+    height: 100dvh;
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 76px 10px 10px;
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+  }
+
+  .left-panel,
+  .right-panel {
+    display: contents;
+  }
+
+  .hud-panel {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    padding: 0;
+  }
+
+  .hud-panel::before {
+    display: none;
+  }
+
+  .left-panel .info-box {
+    grid-column: 1;
+    justify-self: start;
+    width: min(48vw, 170px);
+    padding: 0;
+    text-align: left;
+    background: transparent;
+    border: 0;
+  }
+
+  .left-panel .info-box:first-child {
+    grid-row: 1;
+  }
+
+  .left-panel .info-box:nth-child(2) {
+    grid-row: 1;
+    align-self: end;
+    transform: translateY(42px);
+  }
+
+  .board-wrapper {
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    min-width: 0;
+    margin-top: 8px;
+  }
+
+  canvas#tetris {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 2;
+  }
+
+  .next-preview {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    justify-self: stretch;
+  }
+
+  .next-label,
+  .right-panel .hud-label,
+  .hud-label {
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+  }
+
+  .number-text {
+    font-size: 24px;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+
+  .diff-text {
+    font-size: 14px;
+  }
+
+  canvas#next-piece {
+    width: 70px;
+    height: 70px;
+    margin-top: 0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 7px;
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  .lines-box {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+    justify-self: stretch;
+    padding: 0;
+    text-align: left;
+    background: transparent;
+    border: 0;
+  }
+
+  .lines-box .number-text {
+    font-size: 28px;
+  }
+
+  .touch-dpad {
+    grid-column: 1;
+    grid-row: 3;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    margin-top: 2px;
+    padding-top: 0;
+  }
+
+  .touch-dpad .touch-key {
+    min-width: 0;
+    height: 52px;
+    padding: 0;
+    font-size: 1.5rem;
+    border-radius: 10px;
+  }
+
+  .touch-dpad .touch-key:first-child {
+    order: 1;
+  }
+
+  .touch-dpad .touch-key:nth-child(2) {
+    order: 3;
+  }
+
+  .touch-key-down {
+    display: flex;
+    order: 2;
+  }
+
+  .arcade-buttons {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+    align-self: end;
+    width: 100%;
+    gap: 14px;
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .arcade-triangle {
+    gap: 14px;
+  }
+
+  .arcade-triangle-bottom {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .arcade-round-btn {
+    width: 44px;
+    height: 44px;
+    border-width: 2px;
+  }
+
+  .pause-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .rotate-btn,
+  .speed-btn,
+  .drop-btn {
+    width: 52px;
+    height: 52px;
+  }
+
+  .arcade-btn-icon {
+    font-size: 1rem;
+  }
+
+  .arcade-btn-label {
+    font-size: 0.46rem;
+    letter-spacing: 0.05em;
+  }
+
+  .menu-title {
+    font-size: 1.4rem;
+  }
+
+  .menu-subtitle {
+    font-size: 0.58rem;
+    margin-bottom: 16px;
+  }
+
+  .difficulty-selector {
+    margin-bottom: 16px;
+  }
+
+  .diff-options {
+    gap: 5px;
+  }
+
+  .diff-btn {
+    padding: 7px 12px;
+    font-size: 0.66rem;
+  }
+
+  .start-btn {
+    padding: 10px 22px;
+    font-size: 0.78rem;
+    margin-bottom: 10px;
+  }
+
+  .menu-hint {
+    display: none;
+  }
+
+  .game-container {
+    grid-template-columns: minmax(0, 1fr) 98px;
+    grid-template-rows: auto auto auto auto auto 1fr auto;
+    align-items: start;
+    gap: 8px 10px;
+    width: min(100vw - 18px, 440px);
+    padding: 76px 9px 10px;
+  }
+
+  .board-wrapper {
+    grid-column: 1;
+    grid-row: 1 / span 6;
+    align-self: start;
+    margin-top: 0;
+  }
+
+  .left-panel .info-box {
+    grid-column: 2;
+    justify-self: stretch;
+    width: auto;
+    min-width: 0;
+    text-align: center;
+    padding: 8px 6px;
+    background: rgba(12, 8, 35, 0.34);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.04);
+  }
+
+  .left-panel .info-box:first-child {
+    grid-row: 1;
+  }
+
+  .left-panel .info-box:nth-child(2) {
+    grid-row: 2;
+    align-self: start;
+    transform: none;
+  }
+
+  .next-preview {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: stretch;
+    align-self: start;
+    padding: 8px 6px 10px;
+    background: rgba(12, 8, 35, 0.34);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.04);
+  }
+
+  .lines-box {
+    grid-column: 2;
+    grid-row: 4;
+    align-self: start;
+    justify-self: stretch;
+    text-align: center;
+    padding: 8px 6px;
+    background: rgba(12, 8, 35, 0.34);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.04);
+  }
+
+  .arcade-buttons {
+    display: contents;
+  }
+
+  .pause-group {
+    grid-column: 2;
+    grid-row: 5;
+    align-self: start;
+    margin-top: 4px;
+  }
+
+  .arcade-triangle {
+    grid-column: 2;
+    grid-row: 6;
+    align-self: end;
+    justify-self: stretch;
+    gap: 14px;
+  }
+
+  .arcade-triangle-bottom {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .touch-dpad {
+    grid-column: 1;
+    grid-row: 7;
+    margin-top: 2px;
+  }
+
+  .hud-label,
+  .next-label,
+  .right-panel .hud-label {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+    margin-bottom: 5px;
+  }
+
+  .number-text {
+    font-size: 20px;
+    letter-spacing: 0.04em;
+  }
+
+  .diff-text {
+    font-size: 13px;
+  }
+
+  .lines-box .number-text {
+    font-size: 26px;
+  }
+
+  canvas#next-piece {
+    width: 74px;
+    height: 74px;
+  }
+
+  .arcade-round-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .pause-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .rotate-btn,
+  .speed-btn,
+  .drop-btn {
+    width: 50px;
+    height: 50px;
+  }
+
+  .arcade-btn-label {
+    font-size: 0.4rem;
+    letter-spacing: 0.03em;
+    max-width: 72px;
+    text-align: center;
+    line-height: 1.15;
+  }
+
+  .gameover-actions {
+    flex-direction: column;
+    gap: 8px;
+    width: 72%;
+    max-width: 180px;
+  }
+
+  .gameover-action-btn {
+    width: 100%;
+    padding: 8px 10px;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .game-container {
+    grid-template-columns: minmax(0, 1fr) 86px;
+    width: calc(100vw - 14px);
+    gap: 6px;
+    padding: 74px 7px 8px;
+  }
+
+  .left-panel .info-box {
+    width: auto;
+  }
+
+  .number-text {
+    font-size: 17px;
+  }
+
+  canvas#next-piece {
+    width: 66px;
+    height: 66px;
+  }
+
+  .lines-box .number-text {
+    font-size: 22px;
+  }
+
+  .touch-dpad .touch-key {
+    height: 46px;
+  }
+
+  .arcade-round-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .pause-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .rotate-btn,
+  .speed-btn,
+  .drop-btn {
+    width: 44px;
+    height: 44px;
+  }
 }
 </style>
