@@ -160,7 +160,24 @@
         </div>
       </div>
 
-      <!-- 排行榜保留为弹窗展示，游戏结束后通过按钮打开 -->
+      <div class="hud-panel leaderboard-panel">
+        <div class="lb-header">
+          <span class="lb-title">RANKING</span>
+          <span class="lb-header-icon">✦</span>
+        </div>
+        <div class="lb-list">
+          <div
+            v-for="(entry, idx) in leaderboard"
+            :key="idx"
+            class="lb-row"
+            :class="`lb-rank-${idx + 1}`"
+          >
+            <span class="lb-rank-num">{{ idx + 1 }}</span>
+            <span class="lb-rank-id">{{ entry.id }}</span>
+            <span class="lb-rank-score">{{ formatLeaderboardScore(entry.score) }}</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- 全屏粒子烟花 -->
@@ -1131,7 +1148,7 @@ onUnmounted(() => {
 /* ==================== 游戏界面 UI ==================== */
 .game-container {
   display: flex;
-  gap: 36px;
+  gap: 28px;
   align-items: stretch;
   height: 780px;
   position: absolute;
@@ -1184,7 +1201,7 @@ onUnmounted(() => {
 
 /* ==================== 排行榜面板 ==================== */
 .leaderboard-panel {
-  width: 280px;
+  width: 240px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -1296,8 +1313,8 @@ onUnmounted(() => {
 
 /* ==================== 响应式布局 ==================== */
 
-/* -- 1480px: 隐藏排行榜 -- */
-@media screen and (max-width: 1480px) {
+/* -- 860px: 移动端隐藏桌面排行榜，保持原有弹窗行为 -- */
+@media screen and (max-width: 860px) {
   .leaderboard-panel {
     display: none;
   }
@@ -1316,6 +1333,11 @@ onUnmounted(() => {
   .right-panel {
     width: 165px;
     padding: 20px 16px;
+  }
+  .leaderboard-panel {
+    width: 210px;
+    padding: 20px 16px;
+    gap: 12px;
   }
   .info-box {
     padding: 14px 4px;
@@ -1349,6 +1371,15 @@ onUnmounted(() => {
   }
   .pause-btn .arcade-btn-icon {
     font-size: 0.95rem;
+  }
+  .lb-row {
+    padding: 8px 10px;
+  }
+  .lb-rank-id {
+    font-size: 0.66rem;
+  }
+  .lb-rank-score {
+    font-size: 0.84rem;
   }
 }
 
