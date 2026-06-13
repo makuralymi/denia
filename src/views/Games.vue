@@ -165,16 +165,24 @@
           <span class="lb-title">RANKING</span>
           <span class="lb-header-icon">✦</span>
         </div>
-        <div class="lb-list">
+        <div class="lb-list lb-list-scroll">
           <div
             v-for="(entry, idx) in leaderboard"
             :key="idx"
             class="lb-row"
-            :class="`lb-rank-${idx + 1}`"
+            :class="lbRankClass(idx)"
           >
             <span class="lb-rank-num">{{ idx + 1 }}</span>
             <span class="lb-rank-id">{{ entry.id }}</span>
             <span class="lb-rank-score">{{ formatLeaderboardScore(entry.score) }}</span>
+          </div>
+        </div>
+        <div class="lb-current-wrap">
+          <div class="lb-current-label">YOU</div>
+          <div class="lb-row lb-current-row">
+            <span class="lb-rank-num">{{ currentRank > 0 ? currentRank : '-' }}</span>
+            <span class="lb-rank-id">{{ currentPlayerName }}</span>
+            <span class="lb-rank-score">{{ formatLeaderboardScore(score) }}</span>
           </div>
         </div>
       </div>
@@ -233,7 +241,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import jumpGif from '@/canvas/effects/jump__2_.gif'
 
 // ==================== 难度体系 ====================
@@ -346,21 +354,30 @@ function formatLeaderboardScore(s: number): string {
   return s.toString().padStart(6, '0')
 }
 
-// 检查分数能否上榜，返回排名（0=不能上榜），取前6名
+// 上榜阈值（决定是否弹出输入名字弹窗）。显示侧不再限制条数。
+const HIGH_SCORE_PROMPT_LIMIT = 6
+
+// 检查分数能否上榜，返回排名（0=不弹窗）
 function checkHighScore(sc: number): number {
+  if (sc <= 0) return 0
   for (let i = 0; i < leaderboard.value.length; i++) {
     if (sc > leaderboard.value[i].score) return i + 1
   }
-  if (leaderboard.value.length < 6) return leaderboard.value.length + 1
+  if (leaderboard.value.length < HIGH_SCORE_PROMPT_LIMIT) {
+    return leaderboard.value.length + 1
+  }
   return 0
 }
 
 async function insertScore(id: string, sc: number) {
-  // 乐观更新
+  // 乐观更新：保留所有条目，按分数降序展示
   const entry: LeaderboardEntry = { id, score: sc }
   const list = [...leaderboard.value, entry]
   list.sort((a, b) => b.score - a.score)
-  leaderboard.value = list.slice(0, 6)
+  leaderboard.value = list
+
+  // 记住当前玩家名字用于底部展示
+  currentPlayerName.value = id
 
   // 异步提交到 D1
   try {
@@ -374,6 +391,26 @@ async function insertScore(id: string, sc: number) {
   } catch (err) {
     console.error('Failed to submit score', err)
   }
+}
+
+// 当前游玩玩家名字（默认 YOU，提交成绩后会更新为玩家输入的 id）
+const currentPlayerName = ref('YOU')
+
+// 当前分数在排行榜中的实时排名（0 表示分数为 0 / 不参与排名）
+const currentRank = computed(() => {
+  const sc = score.value
+  if (sc <= 0) return 0
+  let rank = 1
+  for (const entry of leaderboard.value) {
+    if (entry.score > sc) rank++
+  }
+  return rank
+})
+
+// 给排行榜行加上排名配色 class（前 6 名沿用原配色，其后用统一样式）
+function lbRankClass(idx: number): string {
+  const r = idx + 1
+  return r <= 6 ? `lb-rank-${r}` : 'lb-rank-other'
 }
 
 // ==================== 新高分弹窗 ====================
@@ -1205,6 +1242,8 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .lb-header {
@@ -1213,6 +1252,7 @@ onUnmounted(() => {
   justify-content: space-between;
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(var(--c-light-blue), 0.2);
+  flex-shrink: 0;
 }
 
 .lb-title {
@@ -1235,6 +1275,106 @@ onUnmounted(() => {
   flex-direction: column;
   gap: 6px;
 }
+
+/* 侧边面板版：占满剩余高度，超出滚动 */
+.leaderboard-panel .lb-list-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--c-light-blue), 0.35) transparent;
+}
+
+.leaderboard-panel .lb-list-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.leaderboard-panel .lb-list-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.leaderboard-panel .lb-list-scroll::-webkit-scrollbar-thumb {
+  background: rgba(var(--c-light-blue), 0.3);
+  border-radius: 3px;
+}
+
+.leaderboard-panel .lb-list-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--c-light-blue), 0.55);
+}
+
+/* 弹窗版排行榜：限制最大高度并允许滚动 */
+.ranking-modal .lb-list {
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--c-light-blue), 0.35) transparent;
+}
+
+.ranking-modal .lb-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.ranking-modal .lb-list::-webkit-scrollbar-thumb {
+  background: rgba(var(--c-light-blue), 0.3);
+  border-radius: 3px;
+}
+
+/* ==================== 底部固定：当前游玩成绩 ==================== */
+.lb-current-wrap {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(var(--c-pink), 0.35);
+}
+
+.lb-current-label {
+  font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.25em;
+  color: rgba(var(--c-pink), 0.7);
+  text-shadow: 0 0 6px rgba(var(--c-pink), 0.4);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.lb-current-row {
+  background: rgba(var(--c-pink), 0.1);
+  border: 1px solid rgba(var(--c-pink), 0.4);
+  box-shadow: 0 0 12px rgba(var(--c-pink), 0.2), inset 0 0 8px rgba(var(--c-pink), 0.08);
+  border-left: 2px solid rgba(var(--c-pink), 0.8);
+  animation: lbCurrentGlow 2.4s ease-in-out infinite;
+}
+
+.lb-current-row .lb-rank-num,
+.lb-current-row .lb-rank-score {
+  color: #fff;
+  text-shadow: 0 0 8px rgba(var(--c-pink), 0.7);
+}
+
+.lb-current-row .lb-rank-id {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+@keyframes lbCurrentGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(var(--c-pink), 0.18), inset 0 0 6px rgba(var(--c-pink), 0.06);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(var(--c-pink), 0.38), inset 0 0 10px rgba(var(--c-pink), 0.12);
+  }
+}
+
+/* 6 名以外的统一配色 */
+.lb-rank-other .lb-rank-num,
+.lb-rank-other .lb-rank-score { color: rgba(255, 255, 255, 0.55); }
+.lb-rank-other .lb-rank-id { color: rgba(255, 255, 255, 0.4); }
+.lb-rank-other { border-left: 2px solid rgba(255, 255, 255, 0.15); }
 
 .lb-row {
   display: flex;
