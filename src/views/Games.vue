@@ -170,7 +170,7 @@
             v-for="(entry, idx) in leaderboard"
             :key="idx"
             class="lb-row"
-            :class="lbRankClass(idx)"
+            :class="`lb-rank-${idx + 1}`"
           >
             <span class="lb-rank-num">{{ idx + 1 }}</span>
             <span class="lb-rank-id">{{ entry.id }}</span>
@@ -406,12 +406,6 @@ const currentRank = computed(() => {
   }
   return rank
 })
-
-// 给排行榜行加上排名配色 class（前 6 名沿用原配色，其后用统一样式）
-function lbRankClass(idx: number): string {
-  const r = idx + 1
-  return r <= 6 ? `lb-rank-${r}` : 'lb-rank-other'
-}
 
 // ==================== 新高分弹窗 ====================
 const showHighScoreModal = ref(false)
@@ -1369,12 +1363,6 @@ onUnmounted(() => {
     box-shadow: 0 0 18px rgba(var(--c-pink), 0.38), inset 0 0 10px rgba(var(--c-pink), 0.12);
   }
 }
-
-/* 6 名以外的统一配色 */
-.lb-rank-other .lb-rank-num,
-.lb-rank-other .lb-rank-score { color: rgba(255, 255, 255, 0.55); }
-.lb-rank-other .lb-rank-id { color: rgba(255, 255, 255, 0.4); }
-.lb-rank-other { border-left: 2px solid rgba(255, 255, 255, 0.15); }
 
 .lb-row {
   display: flex;
