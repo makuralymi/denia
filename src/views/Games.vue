@@ -354,13 +354,19 @@ function formatLeaderboardScore(s: number): string {
   return s.toString().padStart(6, '0')
 }
 
-// 检查分数排名：只要分数 > 0 就允许上榜并弹出输入名字弹窗（排行榜无数量上限）
+// 当前会话中玩家本人取得过的最高分；只有刷新该值时才弹出「提交分数」弹窗
+const sessionBestScore = ref(0)
+
+// 检查分数：只有 > 0 且 > 本会话历史最高分 时返回排名（用于弹窗）；
+// 排名按当前 leaderboard 实时计算（即使会被排到末尾也会弹）。
 function checkHighScore(sc: number): number {
   if (sc <= 0) return 0
-  for (let i = 0; i < leaderboard.value.length; i++) {
-    if (sc > leaderboard.value[i].score) return i + 1
+  if (sc <= sessionBestScore.value) return 0
+  let rank = 1
+  for (const entry of leaderboard.value) {
+    if (entry.score > sc) rank++
   }
-  return leaderboard.value.length + 1
+  return rank
 }
 
 async function insertScore(id: string, sc: number) {
@@ -768,6 +774,7 @@ function handleGameOver() {
   const finalScore = score.value
   const rank = checkHighScore(finalScore)
   if (rank > 0) {
+    sessionBestScore.value = finalScore
     newRank.value = rank
     hsPlayerName.value = ''
     showHighScoreModal.value = true
