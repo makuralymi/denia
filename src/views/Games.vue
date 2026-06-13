@@ -354,19 +354,13 @@ function formatLeaderboardScore(s: number): string {
   return s.toString().padStart(6, '0')
 }
 
-// 上榜阈值（决定是否弹出输入名字弹窗）。显示侧不再限制条数。
-const HIGH_SCORE_PROMPT_LIMIT = 6
-
-// 检查分数能否上榜，返回排名（0=不弹窗）
+// 检查分数排名：只要分数 > 0 就允许上榜并弹出输入名字弹窗（排行榜无数量上限）
 function checkHighScore(sc: number): number {
   if (sc <= 0) return 0
   for (let i = 0; i < leaderboard.value.length; i++) {
     if (sc > leaderboard.value[i].score) return i + 1
   }
-  if (leaderboard.value.length < HIGH_SCORE_PROMPT_LIMIT) {
-    return leaderboard.value.length + 1
-  }
-  return 0
+  return leaderboard.value.length + 1
 }
 
 async function insertScore(id: string, sc: number) {
