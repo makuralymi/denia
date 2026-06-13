@@ -181,7 +181,7 @@
           <div class="lb-current-label">YOU</div>
           <div class="lb-row lb-current-row">
             <span class="lb-rank-num">{{ currentRank > 0 ? currentRank : '-' }}</span>
-            <span class="lb-rank-id">{{ currentPlayerName }}</span>
+            <span class="lb-rank-id">{{ currentPlayerLabel }}</span>
             <span class="lb-rank-score">{{ formatLeaderboardScore(score) }}</span>
           </div>
         </div>
@@ -243,6 +243,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import jumpGif from '@/canvas/effects/jump__2_.gif'
+import { useLeaderboard } from '@/composables/useLeaderboard'
 
 // ==================== 难度体系 ====================
 const DIFFICULTIES = [
@@ -320,92 +321,22 @@ function playSound(type: 'move' | 'rotate' | 'drop' | 'clear' | 'tetris') {
 }
 
 // ==================== 排行榜 (Cloudflare D1) ====================
-interface LeaderboardEntry {
-  id: string
-  score: number
-}
+const {
+  leaderboard,
+  playerName,
+  rankFor,
+  formatScore: formatLeaderboardScore,
+  loadLeaderboard,
+  submitScore,
+  shouldPromptSubmit,
+  markPersonalBest,
+} = useLeaderboard()
 
-const DEFAULT_LEADERBOARD: LeaderboardEntry[] = [
-  { id: '想成为人类', score: 934680 },
-  { id: '飞行雪绒', score: 915800 },
-  { id: '不捣蛋就给糖', score: 796060 },
-  { id: '我的论文被谁吃了', score: 406420 },
-]
+// 底部「YOU」行显示用：玩家未填名字时回退到 'YOU'
+const currentPlayerLabel = computed(() => playerName.value?.trim() || 'YOU')
 
-const leaderboard = ref<LeaderboardEntry[]>([...DEFAULT_LEADERBOARD])
-
-async function loadLeaderboard() {
-  try {
-    const res = await fetch('/api/leaderboard')
-    const contentType = res.headers.get('content-type')
-    if (res.ok && contentType && contentType.includes('application/json')) {
-      const data = await res.json() as LeaderboardEntry[]
-      if (Array.isArray(data) && data.length > 0) {
-        leaderboard.value = data
-        return
-      }
-    }
-  } catch (err) {
-    console.error('Failed to load leaderboard', err)
-  }
-}
-
-function formatLeaderboardScore(s: number): string {
-  return s.toString().padStart(6, '0')
-}
-
-// 当前会话中玩家本人取得过的最高分；只有刷新该值时才弹出「提交分数」弹窗
-const sessionBestScore = ref(0)
-
-// 检查分数：只有 > 0 且 > 本会话历史最高分 时返回排名（用于弹窗）；
-// 排名按当前 leaderboard 实时计算（即使会被排到末尾也会弹）。
-function checkHighScore(sc: number): number {
-  if (sc <= 0) return 0
-  if (sc <= sessionBestScore.value) return 0
-  let rank = 1
-  for (const entry of leaderboard.value) {
-    if (entry.score > sc) rank++
-  }
-  return rank
-}
-
-async function insertScore(id: string, sc: number) {
-  // 乐观更新：保留所有条目，按分数降序展示
-  const entry: LeaderboardEntry = { id, score: sc }
-  const list = [...leaderboard.value, entry]
-  list.sort((a, b) => b.score - a.score)
-  leaderboard.value = list
-
-  // 记住当前玩家名字用于底部展示
-  currentPlayerName.value = id
-
-  // 异步提交到 D1
-  try {
-    await fetch('/api/leaderboard', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, score: sc }),
-    })
-    // 提交成功后静默重新拉取一下最新数据，以防有并发冲突
-    await loadLeaderboard()
-  } catch (err) {
-    console.error('Failed to submit score', err)
-  }
-}
-
-// 当前游玩玩家名字（默认 YOU，提交成绩后会更新为玩家输入的 id）
-const currentPlayerName = ref('YOU')
-
-// 当前分数在排行榜中的实时排名（0 表示分数为 0 / 不参与排名）
-const currentRank = computed(() => {
-  const sc = score.value
-  if (sc <= 0) return 0
-  let rank = 1
-  for (const entry of leaderboard.value) {
-    if (entry.score > sc) rank++
-  }
-  return rank
-})
+// 当前分数在排行榜中的实时排名
+const currentRank = computed(() => rankFor(score.value))
 
 // ==================== 新高分弹窗 ====================
 const showHighScoreModal = ref(false)
@@ -416,14 +347,12 @@ const hsNameInput = ref<HTMLInputElement | null>(null)
 
 function skipHighScore() {
   showHighScoreModal.value = false
-  hsPlayerName.value = ''
 }
 
 function submitHighScore() {
-  const name = hsPlayerName.value.trim() || 'ANONYMOUS'
-  insertScore(name, score.value)
+  const name = hsPlayerName.value.trim() || playerName.value || 'ANONYMOUS'
+  void submitScore(name, score.value)
   showHighScoreModal.value = false
-  hsPlayerName.value = ''
 }
 
 // ==================== 游戏状态 ====================
@@ -772,17 +701,21 @@ function backToMenu() {
 
 function handleGameOver() {
   const finalScore = score.value
-  const rank = checkHighScore(finalScore)
-  if (rank > 0) {
-    sessionBestScore.value = finalScore
-    newRank.value = rank
-    hsPlayerName.value = ''
-    showHighScoreModal.value = true
-    startFireworks()
-    setTimeout(() => {
-      hsNameInput.value?.focus()
-    }, 100)
-  }
+  if (!shouldPromptSubmit(finalScore)) return
+
+  markPersonalBest(finalScore)
+  newRank.value = rankFor(finalScore)
+  hsPlayerName.value = playerName.value || ''
+  showHighScoreModal.value = true
+  startFireworks()
+  setTimeout(() => {
+    hsNameInput.value?.focus()
+    // 名字已有时把光标移到末尾，方便玩家直接编辑
+    if (hsPlayerName.value && hsNameInput.value) {
+      const len = hsPlayerName.value.length
+      hsNameInput.value.setSelectionRange(len, len)
+    }
+  }, 100)
 }
 
 // ==================== 粒子烟花系统 ====================
@@ -1044,7 +977,7 @@ function doTogglePause() {
 
 // ==================== 生命周期 ====================
 onMounted(() => {
-  loadLeaderboard()
+  void loadLeaderboard()
   canvas = document.getElementById('tetris') as HTMLCanvasElement
   ctx = canvas.getContext('2d')!
   nextCanvas = document.getElementById('next-piece') as HTMLCanvasElement
