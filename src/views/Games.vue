@@ -173,7 +173,7 @@
             :class="`lb-rank-${idx + 1}`"
           >
             <span class="lb-rank-num">{{ idx + 1 }}</span>
-            <span class="lb-rank-id">{{ entry.id }}</span>
+            <span class="lb-rank-id" :title="entry.id">{{ entry.id }}</span>
             <span class="lb-rank-score">{{ formatLeaderboardScore(entry.score) }}</span>
           </div>
         </div>
@@ -181,7 +181,7 @@
           <div class="lb-current-label">YOU</div>
           <div class="lb-row lb-current-row">
             <span class="lb-rank-num">{{ currentRank > 0 ? currentRank : '-' }}</span>
-            <span class="lb-rank-id">{{ currentPlayerLabel }}</span>
+            <span class="lb-rank-id" :title="currentPlayerLabel">{{ currentPlayerLabel }}</span>
             <span class="lb-rank-score">{{ formatLeaderboardScore(score) }}</span>
           </div>
         </div>
@@ -230,7 +230,7 @@
               :class="`lb-rank-${idx + 1}`"
             >
               <span class="lb-rank-num">{{ idx + 1 }}</span>
-              <span class="lb-rank-id">{{ entry.id }}</span>
+              <span class="lb-rank-id" :title="entry.id">{{ entry.id }}</span>
               <span class="lb-rank-score">{{ formatLeaderboardScore(entry.score) }}</span>
             </div>
           </div>
@@ -1302,11 +1302,12 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 9px 14px;
+  padding: 9px 12px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.04);
   transition: all 0.2s ease;
+  gap: 6px;
 }
 
 .lb-row:hover {
@@ -1318,20 +1319,27 @@ onUnmounted(() => {
   font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
   font-size: 1.1rem;
   font-weight: 900;
-  min-width: 22px;
+  min-width: 20px;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .lb-rank-id {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   font-family: 'WuWa Lahai-Roi', 'Courier New', monospace;
   font-size: 0.72rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.7);
-  white-space: nowrap;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
-  margin: 0 6px;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  text-align: left;
 }
 
 .lb-rank-score {
@@ -1339,6 +1347,8 @@ onUnmounted(() => {
   font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.05em;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* 排行榜排名配色 */
