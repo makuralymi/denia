@@ -13,25 +13,25 @@ const localeMeta: Record<string, SeoMeta> = {
     title: '达妮娅 - Denia | 鸣潮同人站点',
     description: '鸣潮达妮娅同人站点 — 探索达妮娅的角色档案、精美图集、Wiki百科与AI互动体验',
     keywords: '达妮娅, Denia, 鸣潮, 同人, 游戏同人站点, ACG, 沉浸式互动',
-    image: '/image/denia.png'
+    image: './image/denia.png'
   },
   en: {
     title: 'Denia | Wuthering Waves Fan Site',
     description: 'Denia fan site for Wuthering Waves. Explore character archives, gallery, wiki, and AI interactive experience.',
     keywords: 'Denia, Wuthering Waves, fan site, ACG, gallery, wiki, AI',
-    image: '/image/denia.png'
+    image: './image/denia.png'
   },
   ja: {
     title: 'ダニア - Denia | 鸣潮同人サイト',
     description: '鸣潮ダニア同人サイト。キャラクターアーカイブ、ギャラリー、Wiki、AIインタラクティブ体験を探索。',
     keywords: 'ダニア, Denia, 鸣潮, 同人, ギャラリー, Wiki, AI',
-    image: '/image/denia.png'
+    image: './image/denia.png'
   },
   ko: {
     title: '데니아 - Denia | 명조 팬 사이트',
     description: '명조 데니아 팬 사이트. 캐릭터 아카이브, 갤러리, 위키, AI 인터랙티브 체험을 탐험하세요.',
     keywords: '데니아, Denia, 명조, 팬사이트, 갤러리, 위키, AI',
-    image: '/image/denia.png'
+    image: './image/denia.png'
   }
 }
 

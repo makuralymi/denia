@@ -14,9 +14,11 @@ export function useLyrics() {
 
   function parseLrc(lrcText: string): LyricLine[] {
     const lines: LyricLine[] = [];
+    // Strip BOM if present
+    const clean = lrcText.charCodeAt(0) === 0xFEFF ? lrcText.slice(1) : lrcText;
     const regex = /\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/;
 
-    for (const line of lrcText.split('\n')) {
+    for (const line of clean.split('\n')) {
       const match = line.match(regex);
       if (match) {
         const minutes = parseInt(match[1]);
@@ -37,7 +39,13 @@ export function useLyrics() {
     loading.value = true;
     activeIndex.value = -1;
     try {
-      const response = await fetch(lrcUrl);
+      // Toy 平台兼容：.lrc 后缀可能不被 serve，先尝试 .lrc 再 fallback .txt
+      const base = new URL(lrcUrl, window.location.href);
+      let response = await fetch(base.href);
+      if (!response.ok) {
+        const fallback = new URL(lrcUrl.replace(/\.lrc$/, '.txt'), window.location.href);
+        response = await fetch(fallback.href);
+      }
       if (!response.ok) throw new Error('Failed to fetch');
       const text = await response.text();
       lyricLines.value = parseLrc(text);

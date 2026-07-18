@@ -2,11 +2,11 @@
   "name": "达妮娅 - Denia",
   "short_name": "Denia",
   "description": "鸣潮达妮娅同人站点",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "theme_color": "#0f0c12",
   "background_color": "#0f0c12",
   "icons": [
-    { "src": "/image/icon.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "./image/icon.png", "sizes": "512x512", "type": "image/png" }
   ]
 }

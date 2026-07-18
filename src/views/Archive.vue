@@ -172,11 +172,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 
-const currentBanner = ref('/image/archive.jpeg')
+const currentBanner = ref('./image/archive.jpeg')
 const isNavCollapsed = ref(false)
 
 onMounted(() => {
-  const images = ['/image/archive.jpeg', '/image/archive1.jpeg']
+  const images = ['./image/archive.jpeg', './image/archive1.jpeg']
   currentBanner.value = images[Math.floor(Math.random() * images.length)]
 })
 

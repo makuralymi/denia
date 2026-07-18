@@ -181,7 +181,7 @@ async function fetchImages() {
   loading.value = true
   error.value = null
   try {
-    const res = await fetch('/api/gallery')
+    const res = await fetch('./images.json')
     if (!res.ok) throw new Error(`HTTP ${res.status}: 无法加载图片列表`)
     const data = await res.json()
     images.value = data.map((item: { name: string; resolution: string }) => ({

@@ -1581,7 +1581,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 
-const currentBanner = ref('/image/archive.jpeg')
+const currentBanner = ref('./image/archive.jpeg')
 const isNavCollapsed = ref(false)
 const activeImageTab = ref(0)
 const activeStatTab = ref(0)

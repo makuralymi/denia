@@ -1016,7 +1016,7 @@ onUnmounted(() => {
 /* ==================== 自定义字体 ==================== */
 @font-face {
   font-family: 'WuWa Lahai-Roi';
-  src: url('/font/WuWa Lahai-Roi Regular.ttf') format('truetype');
+  src: url('./font/WuWa-Lahai-Roi-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
